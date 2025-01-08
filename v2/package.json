@@ -1,0 +1,16 @@
+{
+  "name": "media-cli",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "media": "./bin/media"
+  },
+  "dependencies": {
+    "commander": "^10.0.0",
+    "zx": "^7.2.0"
+  },
+  "scripts": {
+    "start": "node bin/media",
+    "configure": "chmod +x bin/media"
+  }
+}

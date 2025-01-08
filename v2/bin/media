@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+
+import { program } from 'commander';
+
+// Import the subcommand functions from their files
+import { cutCommand } from '../commands/cut.js';
+import { trackCommand } from '../commands/track.js';
+import { extractAudioCommand } from '../commands/extract-audio.js';
+import { generateSrtCommand } from '../commands/generate-srt.js';
+
+// ---------------------
+// Cut
+// ---------------------
+program
+  .command('cut <inputFile>')
+  .description('Cut a portion of a video.')
+  .option('--start <time>', 'Start time, e.g. 00:01:02')
+  .option('--end <time>', 'End time, e.g. 00:02:30')
+  .option('-o, --output <outputFile>', 'Output file')
+  .action((inputFile, opts) => {
+    cutCommand(inputFile, opts);
+  });
+
+// ---------------------
+// Track
+// ---------------------
+program
+  .command('track <inputFile>')
+  .description('Choose a specific audio track from a video.')
+  .requiredOption('--track <trackNumber>', 'Track number (1-based)')
+  .requiredOption('-o, --output <outputFile>', 'Output file')
+  .action((inputFile, opts) => {
+    trackCommand(inputFile, opts);
+  });
+
+// ---------------------
+// Extract Audio
+// ---------------------
+program
+  .command('extract-audio <inputFile>')
+  .description('Extract audio from a video.')
+  .requiredOption('-o, --output <outputFile>', 'Output file')
+  .action((inputFile, opts) => {
+    extractAudioCommand(inputFile, opts);
+  });
+
+// ---------------------
+// Generate SRT
+// ---------------------
+program
+  .command('srt <inputFile>')
+  .description('Generate SRT subtitles from video or audio.')
+  .requiredOption('-o, --output <outputFile>', 'Output file')
+  .action((inputFile, opts) => {
+    generateSrtCommand(inputFile, opts);
+  });
+
+// Parse arguments
+program.parse(process.argv);
