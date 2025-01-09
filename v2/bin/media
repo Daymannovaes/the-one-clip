@@ -8,17 +8,27 @@ import { trackCommand } from '../commands/track.js';
 import { extractAudioCommand } from '../commands/extract-audio.js';
 import { generateSrtCommand } from '../commands/generate-srt.js';
 
+function getOutputFile(inputFile, opts, ext = null) {
+  if (opts.output) return opts.output;
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const inputExt = ext || inputFile.split('.').pop();
+  return `${inputFile.slice(0, -inputExt.length-1)}_${timestamp}.${inputExt}`;
+}
+
 // ---------------------
 // Cut
 // ---------------------
 program
   .command('cut <inputFile>')
   .description('Cut a portion of a video.')
-  .option('--start <time>', 'Start time, e.g. 00:01:02')
-  .option('--end <time>', 'End time, e.g. 00:02:30')
+  .option('--from, --start <time>', 'Start time, e.g. 00:01:02')
+  .option('--to, --end <time>', 'End time, e.g. 00:02:30')
   .option('-o, --output <outputFile>', 'Output file')
   .action((inputFile, opts) => {
-    cutCommand(inputFile, opts);
+    cutCommand(inputFile, {
+      ...opts,
+      output: getOutputFile(inputFile, opts),
+    });
   });
 
 // ---------------------
@@ -28,9 +38,12 @@ program
   .command('track <inputFile>')
   .description('Choose a specific audio track from a video.')
   .requiredOption('--track <trackNumber>', 'Track number (1-based)')
-  .requiredOption('-o, --output <outputFile>', 'Output file')
+  .option('-o, --output <outputFile>', 'Output file')
   .action((inputFile, opts) => {
-    trackCommand(inputFile, opts);
+    trackCommand(inputFile, {
+      ...opts,
+      output: getOutputFile(inputFile, opts),
+    });
   });
 
 // ---------------------
@@ -39,9 +52,12 @@ program
 program
   .command('extract-audio <inputFile>')
   .description('Extract audio from a video.')
-  .requiredOption('-o, --output <outputFile>', 'Output file')
+  .option('-o, --output <outputFile>', 'Output file')
   .action((inputFile, opts) => {
-    extractAudioCommand(inputFile, opts);
+    extractAudioCommand(inputFile, {
+      ...opts,
+      output: getOutputFile(inputFile, opts, 'wav'),
+    });
   });
 
 // ---------------------
@@ -50,9 +66,12 @@ program
 program
   .command('srt <inputFile>')
   .description('Generate SRT subtitles from video or audio.')
-  .requiredOption('-o, --output <outputFile>', 'Output file')
+  .option('-o, --output <outputFile>', 'Output file')
   .action((inputFile, opts) => {
-    generateSrtCommand(inputFile, opts);
+    generateSrtCommand(inputFile, {
+      ...opts,
+      output: getOutputFile(inputFile, opts),
+    });
   });
 
 // Parse arguments

@@ -15,8 +15,8 @@ export async function extractAudioCommand(inputFile, opts) {
 
   try {
     console.log(`Extracting audio from "${inputFile}"...`);
-    // -vn means "disable video recording"; -c:a copy just copies audio
-    await $`ffmpeg -y -i ${inputFile} -vn -c:a copy ${output}`;
+    // -ac is the number of audio channels
+    await $`ffmpeg -i ${inputFile} -ac 1 ${output} -y`;
     console.log(`Audio extracted successfully to "${output}".`);
   } catch (error) {
     console.error('Failed to extract audio:', error);

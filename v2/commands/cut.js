@@ -16,12 +16,6 @@ export async function cutCommand(inputFile, opts) {
 
   if (!start) start = '00:00:00';
 
-  if (!output) {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const inputExt = inputFile.split('.').pop();
-    output = `${inputFile.slice(0, -inputExt.length-1)}_${timestamp}.${inputExt}`;
-  }
-
   if (!start || !output || !inputFile) {
     console.error('Error: Missing required options: --start, --output, --input');
     process.exit(1);
@@ -30,10 +24,10 @@ export async function cutCommand(inputFile, opts) {
   try {
     if (end) {
       console.log(`Cutting "${inputFile}" from ${start} to ${end}...`);
-      await $`ffmpeg -y -i ${inputFile} -ss ${start} -to ${end} -c copy ${output}`;
+      await $`ffmpeg -y -i ${inputFile} -ss ${start} -to ${end} -codec copy ${output}`;
     } else {
       console.log(`Cutting "${inputFile}" from ${start}...`);
-      await $`ffmpeg -y -i ${inputFile} -ss ${start} -c copy ${output}`;
+      await $`ffmpeg -y -i ${inputFile} -ss ${start} -codec copy ${output}`;
     }
     console.log(`Successfully created "${output}".`);
   } catch (error) {
