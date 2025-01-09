@@ -6,7 +6,7 @@ import { program } from 'commander';
 import { cutCommand } from '../commands/cut.js';
 import { trackCommand } from '../commands/track.js';
 import { extractAudioCommand } from '../commands/extract-audio.js';
-import { generateSrtCommand } from '../commands/generate-srt.js';
+import { safelyTranscriptCommand } from '../commands/transcript.js';
 
 function getOutputFile(inputFile, opts, ext = null) {
   if (opts.output) return opts.output;
@@ -61,16 +61,18 @@ program
   });
 
 // ---------------------
-// Generate SRT
+// Transcript
 // ---------------------
 program
-  .command('srt <inputFile>')
+  .command('transcript <inputFile>')
   .description('Generate SRT subtitles from video or audio.')
   .option('-o, --output <outputFile>', 'Output file')
+  .option('-w, --whisperPath <whisperPath>', 'Whisper path (default: ~/workspace/whisper.cpp)')
+  .option('-m, --ggmlModelPath <ggmlModelPath>', 'Ggml model path (default: $GGML_AI_MODELS_PATH/ggml-model-whisper-small.bin)')
   .action((inputFile, opts) => {
-    generateSrtCommand(inputFile, {
+    safelyTranscriptCommand(inputFile, {
       ...opts,
-      output: getOutputFile(inputFile, opts),
+      output: getOutputFile(inputFile, opts, 'srt'),
     });
   });
 
