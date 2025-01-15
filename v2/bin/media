@@ -7,6 +7,7 @@ import { cutCommand } from '../commands/cut.js';
 import { trackCommand } from '../commands/track.js';
 import { extractAudioCommand } from '../commands/extract-audio.js';
 import { safelyTranscriptCommand } from '../commands/transcript.js';
+import { compressCommand } from '../commands/compress.js';
 
 function getOutputFile(inputFile, opts, ext = null) {
   if (opts.output) return opts.output;
@@ -73,6 +74,22 @@ program
     safelyTranscriptCommand(inputFile, {
       ...opts,
       output: getOutputFile(inputFile, opts, 'srt'),
+    });
+  });
+
+// ---------------------
+// Compress
+// ---------------------
+program
+  .command('compress <inputFile>')
+  .description('Compress video to a small but reasonable size')
+  .option('-o, --output <outputFile>', 'Output file')
+  .option('--verygood', 'Use very gdoo quality result. If false, the quality is good but not VERY good')
+  .option('--speed <speed>', 'Specify the speed of compression. Default is fast. "Slow" yields 2x smaller result. Options: fast, slow')
+  .action((inputFile, opts) => {
+    compressCommand(inputFile, {
+      ...opts,
+      output: getOutputFile(inputFile, opts),
     });
   });
 
