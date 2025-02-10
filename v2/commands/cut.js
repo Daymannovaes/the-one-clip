@@ -24,10 +24,10 @@ export async function cutCommand(inputFile, opts) {
   try {
     if (end) {
       console.log(`Cutting "${inputFile}" from ${start} to ${end}...`);
-      await $`ffmpeg -y -i ${inputFile} -ss ${start} -to ${end} -codec copy ${output}`;
+      await $`ffmpeg -y -i ${inputFile} -map 0 -ss ${start} -to ${end} -codec copy ${output}`;
     } else {
       console.log(`Cutting "${inputFile}" from ${start}...`);
-      await $`ffmpeg -y -i ${inputFile} -ss ${start} -codec copy ${output}`;
+      await $`ffmpeg -y -i ${inputFile} -map 0 -ss ${start} -codec copy ${output}`;
     }
     console.log(`Successfully created "${output}".`);
   } catch (error) {
