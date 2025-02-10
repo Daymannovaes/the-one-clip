@@ -12,7 +12,7 @@ import { trackCommand } from '../commands/track.js';
 import { extractAudioCommand } from '../commands/extract-audio.js';
 import { safelyTranscriptCommand } from '../commands/transcript.js';
 import { compressCommand } from '../commands/compress.js';
-
+import { removeTrackCommand } from '../commands/remove-track.js';
 function getOutputFile(inputFile, opts, ext = null) {
   if (opts.output) return opts.output;
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -119,6 +119,21 @@ program
         return;
       }
       console.log(`stdout: ${stdout}`);
+    });
+  });
+
+// ---------------------
+// Remove Track
+// ---------------------
+program
+  .command('remove-track <inputFile>')
+  .description('Remove a specific audio track from a video.')
+  .requiredOption('--track <trackNumber>', 'Track number (1-based)')
+  .option('-o, --output <outputFile>', 'Output file')
+  .action((inputFile, opts) => {
+    removeTrackCommand(inputFile, {
+      ...opts,
+      output: getOutputFile(inputFile, opts),
     });
   });
 
