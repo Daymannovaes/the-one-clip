@@ -4,7 +4,6 @@ import { exec } from 'child_process';
 import { program } from 'commander';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { basename } from 'path';
 
 // Import the subcommand functions from their files
 import { cutCommand } from '../commands/cut.js';
@@ -13,6 +12,8 @@ import { extractAudioCommand } from '../commands/extract-audio.js';
 import { safelyTranscriptCommand } from '../commands/transcript.js';
 import { compressCommand } from '../commands/compress.js';
 import { removeTrackCommand } from '../commands/remove-track.js';
+import { analyzeCommand } from '../commands/analyze.js';
+
 function getOutputFile(inputFile, opts, ext = null) {
   if (opts.output) return opts.output;
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -134,6 +135,18 @@ program
     removeTrackCommand(inputFile, {
       ...opts,
       output: getOutputFile(inputFile, opts),
+    });
+  });
+
+// ---------------------
+// Analyze
+// ---------------------
+program
+  .command('analyze <folder>')
+  .description('Analyze videos in a folder for compression status')
+  .action((folder) => {
+    analyzeCommand(folder).then(results => {
+      console.table(results);
     });
   });
 
