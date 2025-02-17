@@ -27,9 +27,25 @@ program
   .description('Analyze videos in a folder for compression status and compress them')
   .action((folder) => {
     analyzeCommand(folder).then(results => {
-      const files = results.map(result => `${folder}/${result.file}`);
+      let notCompressedFiles = results
+        .filter(result => !result.isCompressed);
 
-      compressBatchCommand(files);
+      if (notCompressedFiles.length === 0) {
+        console.log('No files to compress');
+        return;
+      }
+
+      // filter files that start with __to_delete-
+      notCompressedFiles = notCompressedFiles.filter(result => !result.file.startsWith('__to_delete-'));
+
+      if (notCompressedFiles.length === 0) {
+        console.log('Found files to delete, but no files to compress');
+        return;
+      }
+
+      compressBatchCommand(
+        notCompressedFiles.map(result => `${folder}/${result.file}`)
+      );
     });
   });
 
