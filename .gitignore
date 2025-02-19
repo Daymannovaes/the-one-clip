@@ -2,5 +2,6 @@ src/
 src-adrian/
 src-suba/
 dist/
+dist-v1/
 node_modules/
 v2/node_modules/
