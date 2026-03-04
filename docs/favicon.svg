@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#0d1117"/>
+  <!-- Film strip notches left -->
+  <rect x="2" y="8" width="8" height="6" rx="1.5" fill="#30363d"/>
+  <rect x="2" y="20" width="8" height="6" rx="1.5" fill="#30363d"/>
+  <rect x="2" y="32" width="8" height="6" rx="1.5" fill="#30363d"/>
+  <rect x="2" y="44" width="8" height="6" rx="1.5" fill="#30363d"/>
+  <!-- Play triangle -->
+  <polygon points="26,16 26,48 52,32" fill="#58a6ff"/>
+</svg>

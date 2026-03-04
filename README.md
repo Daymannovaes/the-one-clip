@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/favicon.svg" alt="OneClip" width="96" height="96">
+</p>
+
 # OneClip
 
 **The One Clip to Rule Them All**
@@ -32,6 +36,22 @@ sudo apt install ffmpeg
 - **whisper.cpp** (optional, for transcription only) — see [whisper.cpp](https://github.com/ggerganov/whisper.cpp)
 
 ## Installation
+
+### Recommended
+
+Checks dependencies, then installs the CLI globally:
+
+```bash
+npx install-oneclip
+```
+
+### npm
+
+```bash
+npm install -g oneclip
+```
+
+### From source
 
 ```bash
 git clone https://github.com/daymannovaes/the-one-clip.git
