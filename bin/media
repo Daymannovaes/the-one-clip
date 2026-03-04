@@ -14,6 +14,7 @@ import { silenceRemoveCommand } from '../commands/silence-remove.js';
 import { thumbnailFramesCommand } from '../commands/thumbnail-frames.js';
 import { thumbnailCommand } from '../commands/thumbnail.js';
 import { obsRenameCommand } from '../commands/obs-rename.js';
+import { joinCommand } from '../commands/join.js';
 import { playNotification } from '../lib/notify.js';
 
 function getOutputFile(inputFile, opts, ext = null) {
@@ -168,6 +169,20 @@ program
   .option('-o, --output <file>', 'Output PNG file path')
   .action((imageFile, opts) => {
     thumbnailCommand(imageFile, opts);
+  });
+
+// ---------------------
+// Join
+// ---------------------
+program
+  .command('join <files...>')
+  .description('Join two or more video files into one.')
+  .option('-o, --output <outputFile>', 'Output file')
+  .action((files, opts) => {
+    joinCommand(files, {
+      ...opts,
+      output: opts.output || getOutputFile(files[0], opts),
+    });
   });
 
 // ---------------------

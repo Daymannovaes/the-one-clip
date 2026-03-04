@@ -373,6 +373,11 @@
         <p>Extract thumbnails using scene detection or fixed intervals. Generate styled YouTube thumbnails with text overlays.</p>
       </div>
       <div class="feature-card">
+        <span class="icon">join</span>
+        <h3>Join Videos</h3>
+        <p>Concatenate two or more video files into a single file. Fast stream copy with no re-encoding. <code>oneclip join part1.mkv part2.mkv</code></p>
+      </div>
+      <div class="feature-card">
         <span class="icon">obs</span>
         <h3>OBS Auto-Rename <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;">(macOS)</span></h3>
         <p>Listens for OBS recordings and shows a native macOS dialog to rename the file when it stops. No terminal focus needed.</p>
@@ -413,6 +418,9 @@
 
 <span class="comment"># Generate a styled thumbnail from an image</span>
 <span class="prompt">$</span> <span class="cmd">oneclip thumbnail</span> <span class="arg">screenshot.png</span> <span class="flag">--title "My Video"</span>
+
+<span class="comment"># Join multiple video files into one</span>
+<span class="prompt">$</span> <span class="cmd">oneclip join</span> <span class="arg">part1.mkv part2.mkv part3.mkv</span>
 
 <span class="comment"># Watch OBS and rename recordings via macOS popup (macOS only)</span>
 <span class="prompt">$</span> <span class="cmd">oneclip obs-rename</span></pre>

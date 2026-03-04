@@ -22,6 +22,7 @@ A media processing CLI that wraps ffmpeg into ergonomic commands for cutting, co
 - **Remove silence** from recordings automatically
 - **Extract thumbnail frames** using scene detection or fixed intervals
 - **Generate styled thumbnails** from images with text overlays
+- **Join** two or more video files into one
 
 ## Prerequisites
 
@@ -111,6 +112,9 @@ oneclip thumbnail-frames video.mkv --count 5
 
 # Generate a styled thumbnail from an image
 oneclip thumbnail screenshot.png --title "My Video"
+
+# Join multiple videos into one
+oneclip join part1.mkv part2.mkv part3.mkv
 ```
 
 All commands accept `-o <file>` to specify an output path. If omitted, outputs are named `<input>_<timestamp>.<ext>`.
@@ -149,6 +153,7 @@ commands/            # One file per command
   silence-remove.js
   thumbnail-frames.js
   thumbnail.js
+  join.js
 obs/                 # OBS WebSocket scripts (Python)
 Dockerfile           # Docker image with ffmpeg + Node.js
 docker-compose.yml
