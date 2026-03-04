@@ -5,6 +5,7 @@ import { program } from 'commander';
 // Import the subcommand functions from their files
 import { analyzeCommand } from '../commands/analyze.js';
 import { compressBatchCommand } from '../commands/compress-batch.js';
+import { playNotification } from '../lib/notify.js';
 
 // ---------------------
 // Analyze
@@ -49,5 +50,10 @@ program
     });
   });
 
+// Play notification tone after each command completes
+program.hook('postAction', () => {
+  playNotification();
+});
+
 // Parse arguments
-program.parse(process.argv);
+program.parseAsync(process.argv);

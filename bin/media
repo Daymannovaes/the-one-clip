@@ -13,6 +13,7 @@ import { compressBatchCommand } from '../commands/compress-batch.js';
 import { silenceRemoveCommand } from '../commands/silence-remove.js';
 import { thumbnailFramesCommand } from '../commands/thumbnail-frames.js';
 import { thumbnailCommand } from '../commands/thumbnail.js';
+import { playNotification } from '../lib/notify.js';
 
 function getOutputFile(inputFile, opts, ext = null) {
   if (opts.output) return opts.output;
@@ -168,5 +169,10 @@ program
     thumbnailCommand(imageFile, opts);
   });
 
+// Play notification tone after each command completes
+program.hook('postAction', () => {
+  playNotification();
+});
+
 // Parse arguments
-program.parse(process.argv);
+program.parseAsync(process.argv);
