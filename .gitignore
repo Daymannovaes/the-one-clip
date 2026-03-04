@@ -1,9 +1,33 @@
+# OS
+.DS_Store
+
+# Dependencies
+node_modules/
+
+# Binaries & media
+cli/
+*.mkv
+*.mp4
+*.avi
+*.mov
+*.wav
+*.mp3
+!v2/tones/*.wav
+
+# Legacy / build artifacts
+dist/
+dist-v1/
 src/
 src-adrian/
 src-suba/
-dist/
-dist-v1/
-node_modules/
-v2/node_modules/
 
-cli/HandBrakeCLI
+# Environment & secrets
+.env
+v2/obs/path/
+
+# Docker volumes
+v2/input/
+v2/output/
+
+# Claude Code
+.claude/

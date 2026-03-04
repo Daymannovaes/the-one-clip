@@ -24,3 +24,5 @@ ENV PATH="/app/bin:${PATH}"
 # TODO: add media-auto as well
 ENTRYPOINT ["media"]
 CMD ["--help"]
+
+# docker run --rm -v ~/Movies-lowq/:/app/tmp --entrypoint="" v2-media-tools media-auto analyze /app/tmp

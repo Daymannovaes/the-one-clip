@@ -15,7 +15,7 @@ program
   .action((folder) => {
     analyzeCommand(folder).then(results => {
       // console.table(results);
-      console.log(results.map(result => result.file).join(' '));
+      console.log(results.map(result => result.file).filter(file => !file.isCompressed).join(' '));
     });
   });
 
