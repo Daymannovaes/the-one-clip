@@ -10,7 +10,7 @@ Check that the file exists. Run `ffprobe` to get duration, file size, and stream
 
 Ask the user which audio track to keep (show available tracks from ffprobe). Then run:
 ```
-media track <file> --track <N> -o <file>_track.mkv
+npx oneclip track <file> --track <N> -o <file>_track.mkv
 ```
 
 If the file only has one audio track, skip this step.
@@ -19,7 +19,7 @@ If the file only has one audio track, skip this step.
 
 Run the transcript command on the (possibly track-selected) file:
 ```
-media transcript <file> -o <basename>.srt
+npx oneclip transcript <file> -o <basename>.srt
 ```
 
 Read the generated SRT file and confirm it looks correct.
@@ -41,36 +41,40 @@ Using the SRT transcript you just read, generate:
 
 Present these to the user for review.
 
+Then **prompt the user to choose** which of the 3 title/thumbnail options they want (using AskUserQuestion). Store the chosen title and thumbnail text for use in the thumbnail styling step (Step 6).
+
 ## Step 5: Silence removal
 
 Ask the user if they want to remove silent segments. If yes, run:
 ```
-media silence-remove <file> -o <basename>_no-silence.mkv
+npx oneclip silence-remove <file> -o <basename>_no-silence.mkv
 ```
 
 Report how much time was saved.
 
 ## Step 6: Thumbnails
 
-Generate thumbnail candidates:
+**Stage 1 — Extract frames from the video:**
 ```
-media thumbnail <file> --count 8
-```
-
-View the generated thumbnail images. Recommend the best 2-3 based on visual quality, composition, and how well they'd work as video thumbnails (clear subjects, good lighting, interesting moments).
-
-## Step 7: Compression (optional)
-
-Ask the user if they want to compress the final video. If yes, ask about quality preference (good vs very good) and run:
-```
-media compress <file> -o <basename>_compressed.mkv
+npx oneclip thumbnail-frames <file> --count 8
 ```
 
-## Step 8: Summary
+View the generated frames. Recommend the best 2-3 based on visual quality, composition, and how well they'd work as video thumbnails (clear subjects, good lighting, interesting moments).
+
+**Stage 2 — Generate styled thumbnails using the chosen thumbnail text from Step 4:**
+```
+npx oneclip thumbnail <best-frame.jpg> --title "TEXT HERE" --template all
+```
+
+Run this for each of the recommended frames.
+
+**Note on yellow words:** Wrapping a word in `*asterisks*` in the title makes it render in yellow. For example, `--title "JUNIORS ARE *COOKED*?"` renders "JUNIORS ARE" in white and "COOKED?" in yellow. Use this to emphasize the most impactful word in the thumbnail text.
+
+## Step 7: Summary
 
 Present a final summary with:
 - All output file paths and their sizes
 - Recommended title/thumbnail text pairs (from step 4)
 - Video description with chapters (from step 4)
 - Recommended thumbnails (from step 6)
-- Total processing stats (silence removed, compression ratio, etc.)
+- Total processing stats (silence removed, etc.)
