@@ -16,6 +16,7 @@ cli/
 
 # Legacy / build artifacts
 dist/
+dist-v1/
 src/
 src-adrian/
 src-suba/
