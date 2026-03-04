@@ -6,7 +6,10 @@
     "media": "./bin/media"
   },
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "commander": "^10.0.0",
+    "satori": "^0.24.1",
+    "sharp": "^0.34.5",
     "zx": "^7.2.0"
   },
   "scripts": {
