@@ -70,20 +70,50 @@ export async function silenceRemoveCommand(inputFile, opts) {
       return;
     }
 
-    console.log(`Extracting ${segments.length} non-silent segment(s) via filtergraph...`);
+    // Merge short segments to avoid rapid-fire cuts
+    const minSegment = parseFloat(opts.minSegment || '3');
+    let merged = segments;
+
+    if (minSegment > 0 && segments.length > 1) {
+      merged = [{ ...segments[0] }];
+      for (let i = 1; i < segments.length; i++) {
+        const last = merged[merged.length - 1];
+        if ((last.end - last.start) < minSegment) {
+          // Extend last segment to include the gap + this segment
+          last.end = segments[i].end;
+        } else {
+          merged.push({ ...segments[i] });
+        }
+      }
+
+      // Also merge if the final segment is too short (merge backward)
+      if (merged.length > 1) {
+        const last = merged[merged.length - 1];
+        if ((last.end - last.start) < minSegment) {
+          merged[merged.length - 2].end = last.end;
+          merged.pop();
+        }
+      }
+
+      if (merged.length < segments.length) {
+        console.log(`Merged short segments: ${segments.length} → ${merged.length} segments (min: ${minSegment}s)`);
+      }
+    }
+
+    console.log(`Extracting ${merged.length} non-silent segment(s) via filtergraph...`);
 
     // Pass 2: Single-pass complex filtergraph with trim/atrim + concat
     const filterParts = [];
     const concatInputs = [];
 
-    for (let i = 0; i < segments.length; i++) {
-      const seg = segments[i];
+    for (let i = 0; i < merged.length; i++) {
+      const seg = merged[i];
       filterParts.push(`[0:v]trim=start=${seg.start}:end=${seg.end},setpts=PTS-STARTPTS[v${i}]`);
       filterParts.push(`[0:a]atrim=start=${seg.start}:end=${seg.end},asetpts=PTS-STARTPTS[a${i}]`);
       concatInputs.push(`[v${i}][a${i}]`);
     }
 
-    filterParts.push(`${concatInputs.join('')}concat=n=${segments.length}:v=1:a=1[outv][outa]`);
+    filterParts.push(`${concatInputs.join('')}concat=n=${merged.length}:v=1:a=1[outv][outa]`);
     const filterComplex = filterParts.join(';\n');
 
     await $`ffmpeg -y -i ${inputFile} -filter_complex ${filterComplex} -map [outv] -map [outa] ${output}`;
