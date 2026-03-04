@@ -12,20 +12,19 @@ cli/
 *.mov
 *.wav
 *.mp3
-!v2/tones/*.wav
+!tones/*.wav
 
 # Legacy / build artifacts
 dist/
-dist-v1/
 src/
 src-adrian/
 src-suba/
 
 # Environment & secrets
 .env
-v2/obs/path/
+obs/path/
 
 # Docker volumes
-v2/input/
-v2/output/
+input/
+output/
 

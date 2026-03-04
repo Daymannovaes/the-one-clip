@@ -32,7 +32,7 @@ sudo apt install ffmpeg
 
 ```bash
 git clone https://github.com/daymannovaes/the-one-clip.git
-cd the-one-clip/v2
+cd the-one-clip
 npm install
 npm link
 ```
@@ -44,7 +44,6 @@ The `media` command is now available globally.
 If you prefer not to install ffmpeg locally, use the Docker setup:
 
 ```bash
-cd v2
 docker-compose build
 
 # Run any command through Docker
@@ -100,21 +99,20 @@ Requires `pip install -r obs/requirements.txt` and OBS WebSocket server enabled.
 ## Architecture
 
 ```
-v2/
-  bin/media            # CLI entry point (Commander)
-  commands/            # One file per command
-    cut.js
-    compress.js
-    compress-batch.js
-    extract-audio.js
-    track.js
-    remove-track.js
-    transcript.js
-    silence-remove.js
-    thumbnail.js
-  obs/                 # OBS WebSocket scripts (Python)
-  Dockerfile           # Docker image with ffmpeg + Node.js
-  docker-compose.yml
+bin/media            # CLI entry point (Commander)
+commands/            # One file per command
+  cut.js
+  compress.js
+  compress-batch.js
+  extract-audio.js
+  track.js
+  remove-track.js
+  transcript.js
+  silence-remove.js
+  thumbnail.js
+obs/                 # OBS WebSocket scripts (Python)
+Dockerfile           # Docker image with ffmpeg + Node.js
+docker-compose.yml
 ```
 
 ## License

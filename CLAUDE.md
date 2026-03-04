@@ -1,6 +1,6 @@
 # Video Record Pipeline
 
-Media processing CLI built with Node.js, zx, and commander. Located in `v2/`.
+Media processing CLI built with Node.js, zx, and commander.
 
 ## Available CLI Commands
 
@@ -27,10 +27,9 @@ All commands are invoked via `media <command>`:
 ## Project Structure
 
 ```
-v2/
-  bin/media          # CLI entry point (commander setup)
-  commands/          # One file per command
-  package.json       # Dependencies: commander, zx
+bin/media          # CLI entry point (commander setup)
+commands/          # One file per command
+package.json       # Dependencies: commander, zx
 ```
 
 ## Rules for Claude

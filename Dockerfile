@@ -25,4 +25,4 @@ ENV PATH="/app/bin:${PATH}"
 ENTRYPOINT ["media"]
 CMD ["--help"]
 
-# docker run --rm -v ~/Movies-lowq/:/app/tmp --entrypoint="" v2-media-tools media-auto analyze /app/tmp
+# docker run --rm -v ~/Movies-lowq/:/app/tmp --entrypoint="" media-tools media-auto analyze /app/tmp
