@@ -39,11 +39,42 @@ Generate **3 title/thumbnail text pairs**. Title and thumbnail serve different p
 Write a video description that includes:
 
 1. **Summary paragraph** — 2-3 sentences describing the video content
-2. **Timestamped chapters** — Parse the SRT to identify topic changes and create chapters in this format:
+2. **Timestamped chapters** — Parse the SRT to create dense, navigable chapters following these rules:
+
+   **Density**: Target 1 chapter every 1.5–3 minutes. Never let a single chapter span more than 4 minutes. Scaling guide:
+   - ~10 min video → 5–8 chapters
+   - ~20 min video → 8–12 chapters
+   - ~30 min video → 12–18 chapters
+
+   **Boundary detection**: Split at any of these transitions — don't wait for a "big" topic change:
+   - New concept or subtopic introduced
+   - Demo, walkthrough, or code shown on screen
+   - Tool, file, or context switch
+   - Question asked or answered
+   - Tangent, aside, or story begins
+   - Recap, summary, or wrap-up starts
+   - When in doubt, **split** — more chapters are always better than fewer
+
+   **Title rules**:
+   - 25–40 characters per title
+   - Front-load keywords (most important word first)
+   - No filler: never use "Introduction", "Conclusion", "Overview", "Part 1", "Main Content", "Getting Started"
+   - Each title should work as a standalone search query — be specific about what happens in that segment
+
+   **Format**:
+   - First chapter **must** be `0:00`
+   - Use `M:SS` for videos under 10 min, `MM:SS` for 10–59 min, `H:MM:SS` for 1h+
+   - Timestamps must reference actual SRT cue times — do not round or estimate
+   - Use ` - ` (space-dash-space) as separator
+
+   **Example** (~10 min video):
    ```
-   00:00 - Introduction
-   02:15 - [Topic from transcript]
-   05:30 - [Next topic]
+   0:00 - Why default configs fail
+   1:12 - ESLint flat config setup
+   2:45 - Adding TypeScript rules
+   4:03 - Prettier integration pitfalls
+   5:30 - Custom rule for import order
+   7:18 - Testing the config on a real project
+   9:02 - CI pipeline linting step
    ```
-   Use HH:MM or HH:MM:SS format. Group related subtitle entries into logical chapter sections.
 3. **Tags** — Suggest 5-10 relevant tags/keywords based on the transcript content

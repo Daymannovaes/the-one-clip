@@ -349,7 +349,10 @@
 <span class="prompt">$</span> <span class="cmd">oneclip silence-remove</span> <span class="arg">video.mkv</span> <span class="flag">--threshold -30dB</span>
 
 <span class="comment"># Extract thumbnails via scene detection</span>
-<span class="prompt">$</span> <span class="cmd">oneclip thumbnail-frames</span> <span class="arg">video.mkv</span> <span class="flag">--count 5</span></pre>
+<span class="prompt">$</span> <span class="cmd">oneclip thumbnail-frames</span> <span class="arg">video.mkv</span> <span class="flag">--count 5</span>
+
+<span class="comment"># Generate a styled thumbnail from an image</span>
+<span class="prompt">$</span> <span class="cmd">oneclip thumbnail</span> <span class="arg">screenshot.png</span> <span class="flag">--title "My Video"</span></pre>
     </div>
 
     <p style="color: var(--text-muted); font-size: 0.9rem;">All commands accept <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">-o &lt;file&gt;</code> to specify an output path. If omitted, outputs are named <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">&lt;input&gt;_&lt;timestamp&gt;.&lt;ext&gt;</code>.</p>
@@ -401,7 +404,7 @@
         <span class="terminal-dot"></span>
         <span class="terminal-dot"></span>
       </div>
-      <pre><span class="comment"># Node.js 18+ and ffmpeg required</span>
+      <pre><span class="comment"># Node.js 18+, ffmpeg and ffprobe required</span>
 
 <span class="comment"># macOS</span>
 <span class="prompt">$</span> <span class="cmd">brew install</span> <span class="arg">ffmpeg</span>

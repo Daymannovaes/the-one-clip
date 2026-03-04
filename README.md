@@ -1,4 +1,6 @@
-# the-one-clip
+# OneClip
+
+**The One Clip to Rule Them All**
 
 A media processing CLI that wraps ffmpeg into ergonomic commands for cutting, compressing, transcribing, and editing video files.
 
@@ -11,7 +13,8 @@ A media processing CLI that wraps ffmpeg into ergonomic commands for cutting, co
 - **Extract audio** tracks to WAV
 - **Select or remove** specific audio tracks
 - **Remove silence** from recordings automatically
-- **Extract thumbnails** using scene detection or fixed intervals
+- **Extract thumbnail frames** using scene detection or fixed intervals
+- **Generate styled thumbnails** from images with text overlays
 
 ## Prerequisites
 
@@ -37,7 +40,7 @@ npm install
 npm link
 ```
 
-The `media` command is now available globally.
+The `oneclip` command is now available globally.
 
 ## Docker
 
@@ -56,32 +59,35 @@ The Docker image bundles ffmpeg and mounts `input/` and `output/` directories as
 
 ```bash
 # Cut a segment
-media cut video.mkv --start 00:01:00 --end 00:05:00
+oneclip cut video.mkv --start 00:01:00 --end 00:05:00
 
 # Compress a video
-media compress video.mkv
-media compress video.mkv --verygood --speed slow
+oneclip compress video.mkv
+oneclip compress video.mkv --verygood --speed slow
 
 # Batch compress multiple files
-media compress-batch *.mkv
+oneclip compress-batch *.mkv
 
 # Generate subtitles (requires whisper.cpp)
-media transcript video.mkv
+oneclip transcript video.mkv
 
 # Extract audio
-media extract-audio video.mkv
+oneclip extract-audio video.mkv
 
 # Select a specific audio track
-media track video.mkv --track 2
+oneclip track video.mkv --track 2
 
 # Remove an audio track
-media remove-track video.mkv --track 1
+oneclip remove-track video.mkv --track 1
 
 # Remove silent segments
-media silence-remove video.mkv --threshold -30dB --duration 0.5
+oneclip silence-remove video.mkv --threshold -30dB --duration 0.5
 
-# Extract thumbnails
-media thumbnail video.mkv --count 5
+# Extract thumbnail frames from video
+oneclip thumbnail-frames video.mkv --count 5
+
+# Generate a styled thumbnail from an image
+oneclip thumbnail screenshot.png --title "My Video"
 ```
 
 All commands accept `-o <file>` to specify an output path. If omitted, outputs are named `<input>_<timestamp>.<ext>`.
@@ -109,6 +115,7 @@ commands/            # One file per command
   remove-track.js
   transcript.js
   silence-remove.js
+  thumbnail-frames.js
   thumbnail.js
 obs/                 # OBS WebSocket scripts (Python)
 Dockerfile           # Docker image with ffmpeg + Node.js

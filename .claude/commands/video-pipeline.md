@@ -32,7 +32,11 @@ Using the SRT transcript you just read, generate:
    > **Option N**
    > Title: `Your Title Here`
    > Thumbnail: `TEXT HERE`
-2. **Video description** with timestamped chapters parsed from the SRT (group by topic, use HH:MM:SS format)
+2. **Video description** with timestamped chapters parsed from the SRT, following these rules:
+   - **Density**: 1 chapter every 1.5–3 min, never exceed 4 min per chapter (~5-8 per 10 min, ~8-12 per 20 min, ~12-18 per 30 min)
+   - **Split at**: new concept, demo/code shown, tool switch, question, tangent, recap — when in doubt, split
+   - **Titles**: 25–40 chars, front-load keywords, no filler ("Introduction", "Conclusion", "Part 1"), each title should work as a search query
+   - **Format**: first chapter must be `0:00`, use `M:SS`/`MM:SS`/`H:MM:SS` based on video length, timestamps from actual SRT cues (no rounding)
 3.  **Linkedin post** – a concise post at Linkedin about the video to showcase myself. No hashtags.
 
 Present these to the user for review.
