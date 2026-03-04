@@ -372,6 +372,11 @@
         <h3>Thumbnails</h3>
         <p>Extract thumbnails using scene detection or fixed intervals. Generate styled YouTube thumbnails with text overlays.</p>
       </div>
+      <div class="feature-card">
+        <span class="icon">obs</span>
+        <h3>OBS Auto-Rename <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;">(macOS)</span></h3>
+        <p>Listens for OBS recordings and shows a native macOS dialog to rename the file when it stops. No terminal focus needed.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -407,7 +412,10 @@
 <span class="prompt">$</span> <span class="cmd">oneclip thumbnail-frames</span> <span class="arg">video.mkv</span> <span class="flag">--count 5</span>
 
 <span class="comment"># Generate a styled thumbnail from an image</span>
-<span class="prompt">$</span> <span class="cmd">oneclip thumbnail</span> <span class="arg">screenshot.png</span> <span class="flag">--title "My Video"</span></pre>
+<span class="prompt">$</span> <span class="cmd">oneclip thumbnail</span> <span class="arg">screenshot.png</span> <span class="flag">--title "My Video"</span>
+
+<span class="comment"># Watch OBS and rename recordings via macOS popup (macOS only)</span>
+<span class="prompt">$</span> <span class="cmd">oneclip obs-rename</span></pre>
     </div>
 
     <p style="color: var(--text-muted); font-size: 0.9rem;">All commands accept <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">-o &lt;file&gt;</code> to specify an output path. If omitted, outputs are named <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">&lt;input&gt;_&lt;timestamp&gt;.&lt;ext&gt;</code>.</p>

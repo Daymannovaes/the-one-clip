@@ -115,9 +115,18 @@ oneclip thumbnail screenshot.png --title "My Video"
 
 All commands accept `-o <file>` to specify an output path. If omitted, outputs are named `<input>_<timestamp>.<ext>`.
 
-## OBS Integration
 
-The `obs/` directory contains experimental Python scripts for controlling OBS Studio via WebSocket:
+## OBS Integration (macOS)
+
+Auto-rename OBS recordings when they finish — a native macOS dialog pops up so you can title the file without switching to the terminal:
+
+```bash
+oneclip obs-rename
+```
+
+Requires macOS, Python 3, OBS WebSocket server enabled, and `pip install -r obs/requirements.txt`.
+
+The `obs/` directory also contains helper scripts for controlling OBS Studio via WebSocket:
 
 - `connect.py` — Connect and list available scenes
 - `operations.py` — Programmatic recording control

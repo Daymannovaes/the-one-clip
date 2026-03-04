@@ -13,6 +13,7 @@ import { compressBatchCommand } from '../commands/compress-batch.js';
 import { silenceRemoveCommand } from '../commands/silence-remove.js';
 import { thumbnailFramesCommand } from '../commands/thumbnail-frames.js';
 import { thumbnailCommand } from '../commands/thumbnail.js';
+import { obsRenameCommand } from '../commands/obs-rename.js';
 import { playNotification } from '../lib/notify.js';
 
 function getOutputFile(inputFile, opts, ext = null) {
@@ -167,6 +168,16 @@ program
   .option('-o, --output <file>', 'Output PNG file path')
   .action((imageFile, opts) => {
     thumbnailCommand(imageFile, opts);
+  });
+
+// ---------------------
+// OBS Rename (macOS only)
+// ---------------------
+program
+  .command('obs-rename')
+  .description('Listen for OBS recordings and rename them via macOS popup dialog. Requires OBS WebSocket, Python 3, and macOS.')
+  .action(() => {
+    obsRenameCommand();
   });
 
 // Play notification tone after each command completes
