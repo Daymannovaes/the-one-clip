@@ -2,6 +2,9 @@
   <img src="docs/favicon.svg" alt="OneClip" width="96" height="96">
 </p>
 
+<img width="1599" height="822" alt="image" src="https://github.com/user-attachments/assets/408bb574-0d70-4d06-9f20-ace73f1bae4f" />
+
+
 # OneClip
 
 **The One Clip to Rule Them All**
