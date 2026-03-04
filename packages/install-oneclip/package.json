@@ -1,0 +1,28 @@
+{
+  "name": "install-oneclip",
+  "version": "1.0.0",
+  "description": "Installation wizard for OneClip — checks dependencies and installs the CLI",
+  "type": "module",
+  "bin": {
+    "install-oneclip": "./index.js"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "oneclip",
+    "installer",
+    "ffmpeg",
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daymannovaes/the-one-clip",
+    "directory": "packages/install-oneclip"
+  },
+  "author": "daymannovaes",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

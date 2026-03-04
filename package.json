@@ -1,9 +1,36 @@
 {
-  "name": "media-cli",
+  "name": "oneclip",
   "version": "1.0.0",
+  "description": "The One Clip to Rule Them All — a media processing CLI wrapping ffmpeg into ergonomic commands",
   "type": "module",
   "bin": {
-    "media": "./bin/media"
+    "oneclip": "./bin/media"
+  },
+  "files": [
+    "bin/",
+    "commands/",
+    "lib/",
+    "tones/",
+    "README.md"
+  ],
+  "keywords": [
+    "ffmpeg",
+    "video",
+    "media",
+    "cli",
+    "compress",
+    "cut",
+    "transcript",
+    "thumbnail"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daymannovaes/the-one-clip"
+  },
+  "author": "daymannovaes",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",

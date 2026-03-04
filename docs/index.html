@@ -275,6 +275,7 @@
     <div class="links">
       <a href="#features">Features</a>
       <a href="#usage">Usage</a>
+      <a href="#ai-pipeline">AI Pipeline</a>
       <a href="#install">Install</a>
       <a href="https://github.com/daymannovaes/the-one-clip">GitHub</a>
     </div>
@@ -286,6 +287,7 @@
     <h1>One<span class="accent">Clip</span></h1>
     <p style="font-size: 1.4rem; color: var(--text); margin-bottom: 12px;">The One Clip to Rule Them All</p>
     <p>A media processing CLI that wraps ffmpeg into ergonomic commands for cutting, compressing, transcribing, and editing video files.</p>
+    <div style="margin-bottom: 32px;"><span style="display: inline-block; background: rgba(63, 185, 80, 0.12); border: 1px solid rgba(63, 185, 80, 0.3); color: var(--green); font-size: 0.9rem; font-weight: 600; padding: 6px 18px; border-radius: 999px;">100% free &amp; open source</span></div>
     <div class="hero-install">
       <span>$</span> npm install -g oneclip
       <button class="copy-btn" onclick="copyInstall(this)" title="Copy to clipboard">
@@ -382,12 +384,57 @@
   </div>
 </section>
 
+<section id="ai-pipeline">
+  <div class="container">
+    <h2>AI Pipeline</h2>
+    <p class="subtitle">Claude Code commands that automate your entire content creation workflow.</p>
+    <div class="features-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="feature-card">
+        <span class="icon" style="background: rgba(63, 185, 80, 0.1); color: var(--green);">/</span>
+        <h3><code>/video-pipeline</code></h3>
+        <p>Full production workflow in one command. Audio track selection, transcription, AI-generated titles, chapters, and descriptions, silence removal, thumbnails, and compression — all automated.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon" style="background: rgba(63, 185, 80, 0.1); color: var(--green);">/</span>
+        <h3><code>/video-describe</code></h3>
+        <p>Feed it an SRT transcript, get back YouTube-ready titles, thumbnail text, chapters, and tags. Turns your raw recording into publish-ready metadata.</p>
+      </div>
+    </div>
+    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 24px;">These are <a href="https://docs.anthropic.com/en/docs/claude-code" style="color: var(--accent);">Claude Code</a> slash commands. Install OneClip, open Claude Code in your project, and run them.</p>
+  </div>
+</section>
+
 <section id="install">
   <div class="container">
     <h2>Installation</h2>
     <p class="subtitle">Up and running in under a minute.</p>
 
+    <div class="install-option" style="margin-bottom: 32px;">
+      <h3>Recommended</h3>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">Checks dependencies, then installs the CLI globally.</p>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+        </div>
+        <pre><span class="prompt">$</span> <span class="cmd">npx install-oneclip</span></pre>
+      </div>
+    </div>
+
     <div class="install-grid">
+      <div class="install-option">
+        <h3>npm</h3>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+          </div>
+          <pre><span class="prompt">$</span> <span class="cmd">npm install -g</span> <span class="arg">oneclip</span></pre>
+        </div>
+      </div>
+
       <div class="install-option">
         <h3>From source</h3>
         <div class="terminal">
@@ -401,21 +448,6 @@
 <span class="prompt">$</span> <span class="cmd">npm install</span>
 <span class="prompt">$</span> <span class="cmd">npm link</span>
 <span class="comment"># `oneclip` is now available globally</span></pre>
-        </div>
-      </div>
-
-      <div class="install-option">
-        <h3>Docker</h3>
-        <div class="terminal">
-          <div class="terminal-bar">
-            <span class="terminal-dot"></span>
-            <span class="terminal-dot"></span>
-            <span class="terminal-dot"></span>
-          </div>
-          <pre><span class="prompt">$</span> <span class="cmd">docker-compose build</span>
-
-<span class="comment"># Run any command through Docker</span>
-<span class="prompt">$</span> <span class="cmd">./media-docker compress</span> <span class="arg">input/video.mkv</span> <span class="flag">-o output/video.mp4</span></pre>
         </div>
       </div>
     </div>
