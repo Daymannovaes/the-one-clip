@@ -1,13 +1,10 @@
 import { $ } from 'zx';
-import path from 'path';
-import fs from 'fs';
-import os from 'os';
 
 /**
  * Remove silent segments from a video.
  *
  * Pass 1: Run ffmpeg silencedetect to find silent segments.
- * Pass 2: Extract non-silent segments with -c copy, then concatenate.
+ * Pass 2: Re-encode non-silent segments via a single-pass complex filtergraph.
  *
  * @param {string} inputFile - The input video file path
  * @param {object} opts - { threshold, duration, output }
@@ -73,30 +70,23 @@ export async function silenceRemoveCommand(inputFile, opts) {
       return;
     }
 
-    console.log(`Extracting ${segments.length} non-silent segment(s)...`);
+    console.log(`Extracting ${segments.length} non-silent segment(s) via filtergraph...`);
 
-    // Pass 2: Extract segments to temp files
-    const tmpDir = path.join(os.tmpdir(), `silence-remove-${Date.now()}`);
-    fs.mkdirSync(tmpDir, { recursive: true });
-
-    const segmentFiles = [];
+    // Pass 2: Single-pass complex filtergraph with trim/atrim + concat
+    const filterParts = [];
+    const concatInputs = [];
 
     for (let i = 0; i < segments.length; i++) {
       const seg = segments[i];
-      const segFile = path.join(tmpDir, `seg_${String(i).padStart(4, '0')}.ts`);
-      segmentFiles.push(segFile);
-
-      await $`ffmpeg -y -i ${inputFile} -ss ${seg.start} -to ${seg.end} -c copy -avoid_negative_ts make_zero ${segFile}`;
+      filterParts.push(`[0:v]trim=start=${seg.start}:end=${seg.end},setpts=PTS-STARTPTS[v${i}]`);
+      filterParts.push(`[0:a]atrim=start=${seg.start}:end=${seg.end},asetpts=PTS-STARTPTS[a${i}]`);
+      concatInputs.push(`[v${i}][a${i}]`);
     }
 
-    // Create concat file list
-    const concatFile = path.join(tmpDir, 'concat.txt');
-    const concatContent = segmentFiles.map(f => `file '${f}'`).join('\n');
-    fs.writeFileSync(concatFile, concatContent);
+    filterParts.push(`${concatInputs.join('')}concat=n=${segments.length}:v=1:a=1[outv][outa]`);
+    const filterComplex = filterParts.join(';\n');
 
-    // Concatenate segments
-    console.log('Concatenating segments...');
-    await $`ffmpeg -y -f concat -safe 0 -i ${concatFile} -c copy ${output}`;
+    await $`ffmpeg -y -i ${inputFile} -filter_complex ${filterComplex} -map [outv] -map [outa] ${output}`;
 
     // Report time saved
     const outProbe = await $`ffprobe -v error -show_entries format=duration -of csv=p=0 ${output}`;
@@ -105,9 +95,6 @@ export async function silenceRemoveCommand(inputFile, opts) {
 
     console.log(`Successfully created "${output}".`);
     console.log(`Original: ${totalDuration.toFixed(1)}s → Output: ${outDuration.toFixed(1)}s (removed ${saved.toFixed(1)}s of silence)`);
-
-    // Cleanup temp files
-    fs.rmSync(tmpDir, { recursive: true, force: true });
   } catch (error) {
     console.error('Failed to remove silence:', error);
     process.exit(1);
