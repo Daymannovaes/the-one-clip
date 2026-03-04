@@ -45,9 +45,46 @@ async function loadImageAsBase64(imagePath) {
   return `data:image/jpeg;base64,${buffer.toString('base64')}`;
 }
 
+// --- Title parser: *word* → gold highlight ---
+
+const HIGHLIGHT_COLOR = '#f0b429';
+
+function parseTitle(title) {
+  const segments = title.split(/(\*[^*]+\*)/);
+  const words = [];
+  for (const seg of segments) {
+    if (!seg) continue;
+    const highlighted = seg.startsWith('*') && seg.endsWith('*');
+    const text = highlighted ? seg.slice(1, -1) : seg;
+    for (const word of text.trim().split(/\s+/)) {
+      if (!word) continue;
+      const style = highlighted ? { color: HIGHLIGHT_COLOR } : {};
+      words.push({ type: 'span', props: { style, children: word } });
+    }
+  }
+  return words;
+}
+
 // --- Templates ---
 
-function classicTemplate(base64Img, title) {
+function bgImage(base64Img) {
+  return {
+    type: 'img',
+    props: {
+      src: base64Img,
+      style: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: WIDTH,
+        height: HEIGHT,
+        objectFit: 'cover',
+      },
+    },
+  };
+}
+
+function boldTemplate(base64Img, title) {
   return {
     type: 'div',
     props: {
@@ -58,20 +95,115 @@ function classicTemplate(base64Img, title) {
         position: 'relative',
       },
       children: [
+        bgImage(base64Img),
         {
-          type: 'img',
+          type: 'div',
           props: {
-            src: base64Img,
             style: {
               position: 'absolute',
               top: 0,
               left: 0,
-              width: WIDTH,
-              height: HEIGHT,
-              objectFit: 'cover',
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '60px',
             },
+            children: [
+              {
+                type: 'div',
+                props: {
+                  style: {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 18,
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: 72,
+                    fontWeight: 700,
+                    lineHeight: 1.2,
+                    textAlign: 'center',
+                    textShadow: '0 4px 16px rgba(0,0,0,0.8)',
+                  },
+                  children: parseTitle(title),
+                },
+              },
+            ],
           },
         },
+      ],
+    },
+  };
+}
+
+function sideTemplate(base64Img, title) {
+  return {
+    type: 'div',
+    props: {
+      style: {
+        width: WIDTH,
+        height: HEIGHT,
+        display: 'flex',
+        position: 'relative',
+      },
+      children: [
+        bgImage(base64Img),
+        {
+          type: 'div',
+          props: {
+            style: {
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: '50%',
+              background: 'linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.85))',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              padding: '40px',
+            },
+            children: [
+              {
+                type: 'div',
+                props: {
+                  style: {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 16,
+                    justifyContent: 'flex-end',
+                    color: 'white',
+                    fontSize: 64,
+                    fontWeight: 700,
+                    lineHeight: 1.2,
+                    textAlign: 'right',
+                    textShadow: '0 3px 12px rgba(0,0,0,0.8)',
+                  },
+                  children: parseTitle(title),
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  };
+}
+
+function bottomTemplate(base64Img, title) {
+  return {
+    type: 'div',
+    props: {
+      style: {
+        width: WIDTH,
+        height: HEIGHT,
+        display: 'flex',
+        position: 'relative',
+      },
+      children: [
+        bgImage(base64Img),
         {
           type: 'div',
           props: {
@@ -91,135 +223,20 @@ function classicTemplate(base64Img, title) {
                 type: 'div',
                 props: {
                   style: {
-                    color: 'white',
-                    fontSize: 56,
-                    fontWeight: 700,
-                    lineHeight: 1.2,
-                    textShadow: '0 2px 8px rgba(0,0,0,0.6)',
-                    maxWidth: '90%',
-                  },
-                  children: title,
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
-  };
-}
-
-function centeredTemplate(base64Img, title) {
-  return {
-    type: 'div',
-    props: {
-      style: {
-        width: WIDTH,
-        height: HEIGHT,
-        display: 'flex',
-        position: 'relative',
-      },
-      children: [
-        {
-          type: 'img',
-          props: {
-            src: base64Img,
-            style: {
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: WIDTH,
-              height: HEIGHT,
-              objectFit: 'cover',
-            },
-          },
-        },
-        {
-          type: 'div',
-          props: {
-            style: {
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.55)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '60px',
-            },
-            children: [
-              {
-                type: 'div',
-                props: {
-                  style: {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 16,
                     color: 'white',
                     fontSize: 64,
                     fontWeight: 700,
                     lineHeight: 1.2,
-                    textAlign: 'center',
-                    textShadow: '0 2px 12px rgba(0,0,0,0.7)',
+                    textShadow: '0 3px 12px rgba(0,0,0,0.8)',
+                    maxWidth: '90%',
                   },
-                  children: title,
+                  children: parseTitle(title),
                 },
               },
             ],
-          },
-        },
-      ],
-    },
-  };
-}
-
-function sidebarTemplate(base64Img, title) {
-  return {
-    type: 'div',
-    props: {
-      style: {
-        width: WIDTH,
-        height: HEIGHT,
-        display: 'flex',
-        flexDirection: 'row',
-      },
-      children: [
-        {
-          type: 'div',
-          props: {
-            style: {
-              width: '40%',
-              height: HEIGHT,
-              backgroundColor: '#1a1a2e',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '40px',
-            },
-            children: [
-              {
-                type: 'div',
-                props: {
-                  style: {
-                    color: 'white',
-                    fontSize: 48,
-                    fontWeight: 700,
-                    lineHeight: 1.3,
-                  },
-                  children: title,
-                },
-              },
-            ],
-          },
-        },
-        {
-          type: 'img',
-          props: {
-            src: base64Img,
-            style: {
-              width: '60%',
-              height: HEIGHT,
-              objectFit: 'cover',
-            },
           },
         },
       ],
@@ -228,9 +245,9 @@ function sidebarTemplate(base64Img, title) {
 }
 
 const TEMPLATES = {
-  classic: classicTemplate,
-  centered: centeredTemplate,
-  sidebar: sidebarTemplate,
+  bold: boldTemplate,
+  side: sideTemplate,
+  bottom: bottomTemplate,
 };
 
 async function renderThumbnail(element, fontData, outputPath) {
@@ -284,7 +301,7 @@ export async function thumbnailCommand(imageFile, opts) {
     process.exit(1);
   }
 
-  const templateName = opts.template || 'classic';
+  const templateName = opts.template || 'bold';
   const fontData = await ensureFont(opts.font);
   const base64Img = await loadImageAsBase64(imageFile);
 

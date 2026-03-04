@@ -162,7 +162,7 @@ program
   .command('thumbnail <imageFile>')
   .description('Generate a styled YouTube thumbnail from an image + title.')
   .requiredOption('--title <text>', 'Title text overlay')
-  .option('--template <name>', 'Template: classic, centered, sidebar, or all (default: classic)', 'classic')
+  .option('--template <name>', 'Template: bold, side, bottom, or all (default: bold)', 'bold')
   .option('--font <path>', 'Custom TTF font file path')
   .option('-o, --output <file>', 'Output PNG file path')
   .action((imageFile, opts) => {

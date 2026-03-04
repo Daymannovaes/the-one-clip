@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OneClip — Media Processing CLI</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --bg-card: #161b22;
+      --bg-code: #1c2128;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --cyan: #39d353;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    nav .logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+    nav .links { display: flex; gap: 24px; }
+    nav .links a { color: var(--text-muted); font-size: 0.9rem; }
+    nav .links a:hover { color: var(--text); text-decoration: none; }
+
+    /* Hero */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .hero h1 .accent { color: var(--accent); }
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+    .hero-install {
+      display: inline-block;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 1rem;
+      color: var(--green);
+      margin-bottom: 28px;
+    }
+    .hero-install span { color: var(--text-muted); }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+    .btn-primary:hover { background: #79b8ff; text-decoration: none; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: var(--bg-card); text-decoration: none; }
+
+    /* Section */
+    section { padding: 80px 0; }
+    section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    section .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 48px;
+    }
+
+    /* Features */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+    .feature-card .icon {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      display: block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      background: rgba(88, 166, 255, 0.1);
+      border-radius: 8px;
+      color: var(--accent);
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-weight: 700;
+    }
+    .feature-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .feature-card code {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.8rem;
+      background: var(--bg-code);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--green);
+    }
+
+    /* Terminal */
+    .terminal {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .terminal-bar {
+      background: var(--bg-card);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .terminal-dot:nth-child(1) { background: #ff5f57; }
+    .terminal-dot:nth-child(2) { background: #febc2e; }
+    .terminal-dot:nth-child(3) { background: #28c840; }
+    .terminal-title {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-left: 8px;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+    }
+    .terminal pre {
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+    .terminal pre .comment { color: var(--text-muted); }
+    .terminal pre .prompt { color: var(--green); }
+    .terminal pre .cmd { color: var(--text); }
+    .terminal pre .flag { color: var(--cyan); }
+    .terminal pre .arg { color: #ffa657; }
+
+    /* Install */
+    .install-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .install-option h3 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    footer a { color: var(--text-muted); }
+    footer a:hover { color: var(--text); }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero { padding: 60px 0 50px; }
+      .hero h1 { font-size: 2.2rem; }
+      .hero p { font-size: 1.05rem; }
+      .hero-install { font-size: 0.85rem; padding: 12px 20px; }
+      section { padding: 50px 0; }
+      .install-grid { grid-template-columns: 1fr; }
+      nav .links { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <span class="logo">OneClip</span>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#usage">Usage</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/daymannovaes/the-one-clip">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <h1>One<span class="accent">Clip</span></h1>
+    <p style="font-size: 1.4rem; color: var(--text); margin-bottom: 12px;">The One Clip to Rule Them All</p>
+    <p>A media processing CLI that wraps ffmpeg into ergonomic commands for cutting, compressing, transcribing, and editing video files.</p>
+    <div class="hero-install">
+      <span>$</span> npm install -g oneclip
+    </div>
+    <div class="hero-actions">
+      <a href="#install" class="btn btn-primary">Get Started</a>
+      <a href="https://github.com/daymannovaes/the-one-clip" class="btn btn-secondary">View on GitHub</a>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="container">
+    <h2>Features</h2>
+    <p class="subtitle">Everything you need to process video from the command line.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="icon">cut</span>
+        <h3>Cut Segments</h3>
+        <p>Extract video segments by start and end timestamps. <code>oneclip cut video.mkv --start 00:01:00 --end 00:05:00</code></p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">zip</span>
+        <h3>Compress</h3>
+        <p>H.264 compression with configurable quality and speed presets. Supports batch processing for multiple files.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">srt</span>
+        <h3>Transcribe</h3>
+        <p>Generate SRT subtitles from video using whisper.cpp. Handles WAV conversion automatically.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">mute</span>
+        <h3>Remove Silence</h3>
+        <p>Automatically detect and remove silent segments. Configurable threshold, duration, and minimum segment length.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">wav</span>
+        <h3>Extract Audio</h3>
+        <p>Extract audio tracks to WAV format. Select or remove specific audio tracks from multi-track files.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">img</span>
+        <h3>Thumbnails</h3>
+        <p>Extract thumbnails using scene detection or fixed intervals. Generate styled YouTube thumbnails with text overlays.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="usage" style="background: var(--bg-card);">
+  <div class="container">
+    <h2>Usage</h2>
+    <p class="subtitle">Simple commands that do the right thing by default.</p>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-title">Terminal</span>
+      </div>
+      <pre><span class="comment"># Cut a segment from a video</span>
+<span class="prompt">$</span> <span class="cmd">oneclip cut</span> <span class="arg">video.mkv</span> <span class="flag">--start 00:01:00 --end 00:05:00</span>
+
+<span class="comment"># Compress with high quality</span>
+<span class="prompt">$</span> <span class="cmd">oneclip compress</span> <span class="arg">video.mkv</span> <span class="flag">--verygood --speed slow</span>
+
+<span class="comment"># Batch compress all MKV files</span>
+<span class="prompt">$</span> <span class="cmd">oneclip compress-batch</span> <span class="arg">*.mkv</span>
+
+<span class="comment"># Generate subtitles</span>
+<span class="prompt">$</span> <span class="cmd">oneclip transcript</span> <span class="arg">video.mkv</span>
+
+<span class="comment"># Remove silence from a recording</span>
+<span class="prompt">$</span> <span class="cmd">oneclip silence-remove</span> <span class="arg">video.mkv</span> <span class="flag">--threshold -30dB</span>
+
+<span class="comment"># Extract thumbnails via scene detection</span>
+<span class="prompt">$</span> <span class="cmd">oneclip thumbnail-frames</span> <span class="arg">video.mkv</span> <span class="flag">--count 5</span></pre>
+    </div>
+
+    <p style="color: var(--text-muted); font-size: 0.9rem;">All commands accept <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">-o &lt;file&gt;</code> to specify an output path. If omitted, outputs are named <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">&lt;input&gt;_&lt;timestamp&gt;.&lt;ext&gt;</code>.</p>
+  </div>
+</section>
+
+<section id="install">
+  <div class="container">
+    <h2>Installation</h2>
+    <p class="subtitle">Up and running in under a minute.</p>
+
+    <div class="install-grid">
+      <div class="install-option">
+        <h3>From source</h3>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+          </div>
+          <pre><span class="prompt">$</span> <span class="cmd">git clone</span> <span class="arg">https://github.com/daymannovaes/the-one-clip.git</span>
+<span class="prompt">$</span> <span class="cmd">cd</span> <span class="arg">the-one-clip</span>
+<span class="prompt">$</span> <span class="cmd">npm install</span>
+<span class="prompt">$</span> <span class="cmd">npm link</span>
+<span class="comment"># `oneclip` is now available globally</span></pre>
+        </div>
+      </div>
+
+      <div class="install-option">
+        <h3>Docker</h3>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+          </div>
+          <pre><span class="prompt">$</span> <span class="cmd">docker-compose build</span>
+
+<span class="comment"># Run any command through Docker</span>
+<span class="prompt">$</span> <span class="cmd">./media-docker compress</span> <span class="arg">input/video.mkv</span> <span class="flag">-o output/video.mp4</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 40px; margin-bottom: 12px;">Prerequisites</h3>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+      </div>
+      <pre><span class="comment"># Node.js 18+ and ffmpeg required</span>
+
+<span class="comment"># macOS</span>
+<span class="prompt">$</span> <span class="cmd">brew install</span> <span class="arg">ffmpeg</span>
+
+<span class="comment"># Ubuntu/Debian</span>
+<span class="prompt">$</span> <span class="cmd">sudo apt install</span> <span class="arg">ffmpeg</span>
+
+<span class="comment"># Optional: whisper.cpp for transcription</span>
+<span class="comment"># See https://github.com/ggerganov/whisper.cpp</span></pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>MIT License &middot; <a href="https://github.com/daymannovaes/the-one-clip">OneClip on GitHub</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
