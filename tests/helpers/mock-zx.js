@@ -4,14 +4,26 @@ import { vi } from 'vitest';
  * Create a mock $`` tagged template result that looks like a zx ProcessOutput.
  */
 export function createMockProcess(stdout = '', stderr = '') {
-  const proc = {
+  return {
     stdout,
     stderr,
     exitCode: 0,
     toString() { return stdout; },
-    nothrow() { return proc; },
   };
-  return proc;
+}
+
+/**
+ * Create a ProcessPromise-like object that supports .nothrow() chaining
+ * before await, mimicking zx's behavior: await $`...`.nothrow()
+ */
+export function createMockProcessPromise(stdout = '', stderr = '') {
+  const output = createMockProcess(stdout, stderr);
+  const promise = Promise.resolve(output);
+
+  // Add .nothrow() that returns a thenable resolving to the output
+  promise.nothrow = () => Promise.resolve(output);
+
+  return promise;
 }
 
 /**
@@ -34,24 +46,4 @@ export function flattenTemplateCall(callArgs) {
     }
   }
   return result;
-}
-
-/**
- * Setup a vi.mock for 'zx' that returns a mock $ function.
- * Returns an accessor for the mock.
- */
-export function setupMockZx() {
-  let mockDollar;
-
-  beforeEach(() => {
-    mockDollar = vi.fn().mockReturnValue(createMockProcess());
-  });
-
-  // The caller must call vi.mock('zx', ...) themselves since vi.mock is hoisted.
-  // This helper just provides the mock function reference.
-  return {
-    get $() { return mockDollar; },
-    set $(fn) { mockDollar = fn; },
-    getMockDollar: () => mockDollar,
-  };
 }

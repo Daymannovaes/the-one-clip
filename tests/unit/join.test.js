@@ -6,22 +6,26 @@ vi.mock('zx', () => ({
   get $() { return mockDollar; },
 }));
 
-// Mock fs.writeFileSync and fs.unlinkSync
+let mockWriteFileSync;
+let mockUnlinkSync;
 vi.mock('fs', async (importOriginal) => {
   const actual = await importOriginal();
+  mockWriteFileSync = vi.fn();
+  mockUnlinkSync = vi.fn();
   return {
     ...actual,
-    writeFileSync: vi.fn(),
-    unlinkSync: vi.fn(),
+    get writeFileSync() { return mockWriteFileSync; },
+    get unlinkSync() { return mockUnlinkSync; },
   };
 });
 
 const { joinCommand } = await import('../../commands/join.js');
-const fs = await import('fs');
 
 describe('joinCommand', () => {
   beforeEach(() => {
     mockDollar = vi.fn().mockReturnValue(createMockProcess());
+    mockWriteFileSync = vi.fn();
+    mockUnlinkSync = vi.fn();
     vi.spyOn(console, 'log').mockImplementation(() => {});
     vi.spyOn(console, 'error').mockImplementation(() => {});
     vi.spyOn(process, 'exit').mockImplementation(() => { throw new Error('process.exit'); });
@@ -35,8 +39,7 @@ describe('joinCommand', () => {
 
   it('should create a concat list with file entries', async () => {
     await joinCommand(['a.mkv', 'b.mkv'], { output: 'out.mkv' });
-    const writeCall = fs.writeFileSync.mock.calls[0];
-    const content = writeCall[1];
+    const content = mockWriteFileSync.mock.calls[0][1];
     expect(content).toContain("file 'a.mkv'");
     expect(content).toContain("file 'b.mkv'");
   });
@@ -50,12 +53,12 @@ describe('joinCommand', () => {
 
   it('should cleanup temp file after completion', async () => {
     await joinCommand(['a.mkv', 'b.mkv'], { output: 'out.mkv' });
-    expect(fs.unlinkSync).toHaveBeenCalled();
+    expect(mockUnlinkSync).toHaveBeenCalled();
   });
 
   it('should handle 3+ files', async () => {
     await joinCommand(['a.mkv', 'b.mkv', 'c.mkv'], { output: 'out.mkv' });
-    const content = fs.writeFileSync.mock.calls[0][1];
+    const content = mockWriteFileSync.mock.calls[0][1];
     expect(content).toContain("file 'a.mkv'");
     expect(content).toContain("file 'b.mkv'");
     expect(content).toContain("file 'c.mkv'");

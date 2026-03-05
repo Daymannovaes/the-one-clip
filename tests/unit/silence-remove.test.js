@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createMockProcess, flattenTemplateCall } from '../helpers/mock-zx.js';
+import { createMockProcessPromise, flattenTemplateCall } from '../helpers/mock-zx.js';
 
 let mockDollar;
-let callCount;
 vi.mock('zx', () => ({
   get $() { return mockDollar; },
 }));
@@ -11,7 +10,6 @@ const { silenceRemoveCommand } = await import('../../commands/silence-remove.js'
 
 describe('silenceRemoveCommand', () => {
   beforeEach(() => {
-    callCount = 0;
     vi.spyOn(console, 'log').mockImplementation(() => {});
     vi.spyOn(console, 'error').mockImplementation(() => {});
     vi.spyOn(process, 'exit').mockImplementation(() => { throw new Error('process.exit'); });
@@ -19,18 +17,16 @@ describe('silenceRemoveCommand', () => {
 
   function setupMockWithSilence(silenceOutput, duration = '10.0') {
     mockDollar = vi.fn().mockImplementation((...args) => {
-      callCount++;
       const cmd = flattenTemplateCall(args);
       if (cmd.includes('silencedetect')) {
-        // First call: silence detection (returns nothrow-able result)
-        const proc = createMockProcess(silenceOutput, '');
-        proc.nothrow = () => Promise.resolve(proc);
-        return proc.nothrow();
+        return createMockProcessPromise(silenceOutput, '');
       } else if (cmd.includes('ffprobe')) {
-        return createMockProcess(duration + '\n');
+        return createMockProcessPromise(duration + '\n');
+      } else if (cmd.includes('cp ')) {
+        return Promise.resolve();
       } else {
-        // filter_complex call
-        return createMockProcess();
+        // filter_complex or other ffmpeg calls
+        return createMockProcessPromise();
       }
     });
   }
@@ -44,7 +40,6 @@ describe('silenceRemoveCommand', () => {
   it('should copy file as-is when no silence is detected', async () => {
     setupMockWithSilence('no silence info here');
     await silenceRemoveCommand('input.mkv', { output: 'out.mkv' });
-    // Should call silencedetect then cp (via $)
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining('No silence detected'));
   });
 
@@ -70,7 +65,6 @@ describe('silenceRemoveCommand', () => {
 
     await silenceRemoveCommand('input.mkv', { output: 'out.mkv' });
 
-    // Find the filter_complex call
     const filterCall = mockDollar.mock.calls.find(call => {
       const cmd = flattenTemplateCall(call);
       return cmd.includes('filter_complex') || cmd.includes('-filter_complex');
@@ -82,7 +76,7 @@ describe('silenceRemoveCommand', () => {
   });
 
   it('should use default threshold of -30dB', async () => {
-    const silenceOutput = '[silencedetect @ 0x123] silence_start: 1.0\n[silencedetect @ 0x123] silence_end: 2.0';
+    const silenceOutput = 'silence_start: 1.0\nsilence_end: 2.0';
     setupMockWithSilence(silenceOutput);
 
     await silenceRemoveCommand('input.mkv', { output: 'out.mkv' });
@@ -92,7 +86,7 @@ describe('silenceRemoveCommand', () => {
   });
 
   it('should use custom threshold when specified', async () => {
-    const silenceOutput = '[silencedetect @ 0x123] silence_start: 1.0\n[silencedetect @ 0x123] silence_end: 2.0';
+    const silenceOutput = 'silence_start: 1.0\nsilence_end: 2.0';
     setupMockWithSilence(silenceOutput);
 
     await silenceRemoveCommand('input.mkv', { output: 'out.mkv', threshold: '-50dB' });
@@ -102,7 +96,6 @@ describe('silenceRemoveCommand', () => {
   });
 
   it('should merge short segments', async () => {
-    // Create many short segments that should be merged
     const silenceOutput = [
       'silence_start: 1.0', 'silence_end: 1.5',
       'silence_start: 3.0', 'silence_end: 3.5',

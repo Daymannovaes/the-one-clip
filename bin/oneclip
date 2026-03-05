@@ -17,6 +17,13 @@ import { thumbnailCommand } from '../commands/thumbnail.js';
 import { obsRenameCommand } from '../commands/obs-renamer.js';
 import { joinCommand } from '../commands/join.js';
 import { playNotification } from '../lib/notify.js';
+import { checkForUpdate } from '../lib/check-version.js';
+import { upgradeCommand } from '../commands/upgrade.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { version } = require('../package.json');
+
+program.version(version, '-V, --version');
 
 function getOutputFile(inputFile, opts, ext = null) {
   if (opts.output) return opts.output;
@@ -238,10 +245,21 @@ batch
     });
   });
 
+// ---------------------
+// Upgrade
+// ---------------------
+program
+  .command('upgrade')
+  .description('Upgrade oneclip to the latest version.')
+  .action(() => {
+    return upgradeCommand();
+  });
+
 // Play notification tone after each command completes
 program.hook('postAction', async () => {
   await playNotification();
 });
 
-// Parse arguments
+// Check for updates, then parse arguments
+await checkForUpdate();
 program.parseAsync(process.argv);
