@@ -1,6 +1,6 @@
 {
   "name": "oneclip",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "The One Clip to Rule Them All — a media processing CLI wrapping ffmpeg into ergonomic commands",
   "type": "module",
   "bin": {
