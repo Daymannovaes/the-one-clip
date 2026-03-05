@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 import threading
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -49,13 +50,8 @@ def rename_recording(output_path):
     print(f"  Renamed: {path.name} → {new_name}")
 
 
-def main():
-    load_dotenv()
-
-    host = os.getenv('OBS_HOST', 'localhost')
-    port = int(os.getenv('OBS_PORT', '4455'))
-    password = os.getenv('OBS_PASSWORD', '')
-
+def listen(host, port, password):
+    """Connect to OBS and listen for recording events. Blocks until disconnected."""
     ws = obsws(host, port, password)
 
     stop_event = threading.Event()
@@ -79,17 +75,51 @@ def main():
 
     try:
         while True:
-            stop_event.wait()
-            stop_event.clear()
-            output_path = stopped_path.get('path')
-            if output_path:
-                rename_recording(output_path)
-                print()
+            # Use timeout so we can detect if OBS closed (recv thread dies)
+            triggered = stop_event.wait(timeout=5)
+            if triggered:
+                stop_event.clear()
+                output_path = stopped_path.get('path')
+                if output_path:
+                    rename_recording(output_path)
+                    print()
+            else:
+                # Check if the websocket recv thread is still alive
+                if not ws.ws.connected:
+                    print("OBS connection lost.")
+                    break
     except KeyboardInterrupt:
-        print("\nDisconnecting...")
+        raise
     finally:
-        ws.disconnect()
+        try:
+            ws.disconnect()
+        except Exception:
+            pass
         print("Disconnected from OBS")
+
+
+def main():
+    load_dotenv()
+
+    host = os.getenv('OBS_HOST', 'localhost')
+    port = int(os.getenv('OBS_PORT', '4455'))
+    password = os.getenv('OBS_PASSWORD', '')
+
+    while True:
+        try:
+            listen(host, port, password)
+        except KeyboardInterrupt:
+            print("\nShutting down...")
+            break
+        except Exception as e:
+            print(f"Connection failed: {e}")
+
+        print("Retrying in 30 seconds...")
+        try:
+            time.sleep(30)
+        except KeyboardInterrupt:
+            print("\nShutting down...")
+            break
 
 
 if __name__ == '__main__':

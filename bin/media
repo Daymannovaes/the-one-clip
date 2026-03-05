@@ -13,7 +13,7 @@ import { compressBatchCommand } from '../commands/compress-batch.js';
 import { silenceRemoveCommand } from '../commands/silence-remove.js';
 import { thumbnailFramesCommand } from '../commands/thumbnail-frames.js';
 import { thumbnailCommand } from '../commands/thumbnail.js';
-import { obsRenameCommand } from '../commands/obs-rename.js';
+import { obsRenameCommand } from '../commands/obs-renamer.js';
 import { joinCommand } from '../commands/join.js';
 import { playNotification } from '../lib/notify.js';
 
@@ -34,7 +34,7 @@ program
   .option('--to, --end <time>', 'End time, e.g. 00:02:30')
   .option('-o, --output <outputFile>', 'Output file')
   .action((inputFile, opts) => {
-    cutCommand(inputFile, {
+    return cutCommand(inputFile, {
       ...opts,
       output: getOutputFile(inputFile, opts),
     });
@@ -49,7 +49,7 @@ program
   .requiredOption('--track <trackNumber>', 'Track number (1-based)')
   .option('-o, --output <outputFile>', 'Output file')
   .action((inputFile, opts) => {
-    trackCommand(inputFile, {
+    return trackCommand(inputFile, {
       ...opts,
       output: getOutputFile(inputFile, opts),
     });
@@ -63,7 +63,7 @@ program
   .description('Extract audio from a video.')
   .option('-o, --output <outputFile>', 'Output file')
   .action((inputFile, opts) => {
-    extractAudioCommand(inputFile, {
+    return extractAudioCommand(inputFile, {
       ...opts,
       output: getOutputFile(inputFile, opts, 'wav'),
     });
@@ -79,7 +79,7 @@ program
   .option('-w, --whisperPath <whisperPath>', 'Whisper path (default: ~/workspace/whisper.cpp)')
   .option('-m, --ggmlModelPath <ggmlModelPath>', 'Ggml model path (default: $GGML_AI_MODELS_PATH/ggml-model-whisper-small.bin)')
   .action((inputFile, opts) => {
-    safelyTranscriptCommand(inputFile, {
+    return safelyTranscriptCommand(inputFile, {
       ...opts,
       output: getOutputFile(inputFile, opts, 'srt'),
     });
@@ -94,8 +94,9 @@ program
   .option('-o, --output <outputFile>', 'Output file')
   .option('--verygood', 'Use very good quality result. If false, the quality is good but not VERY good')
   .option('--speed <speed>', 'Specify the speed of compression. Default is fast. "Slow" yields 2x smaller result. Options: fast, slow')
+  .option('--codec <codec>', 'Video codec. Options: h264, h265 (default: h265)')
   .action((inputFile, opts) => {
-    compressCommand(inputFile, {
+    return compressCommand(inputFile, {
       ...opts,
       output: getOutputFile(inputFile, opts),
     });
@@ -108,7 +109,7 @@ program
     .command('compress-batch <files...>')
     .description('Compress multiple files and rename originals')
     .action((files) => {
-        compressBatchCommand(files);
+        return compressBatchCommand(files);
     });
 
 // ---------------------
@@ -120,7 +121,7 @@ program
   .requiredOption('--track <trackNumber>', 'Track number (1-based)')
   .option('-o, --output <outputFile>', 'Output file')
   .action((inputFile, opts) => {
-    removeTrackCommand(inputFile, {
+    return removeTrackCommand(inputFile, {
       ...opts,
       output: getOutputFile(inputFile, opts),
     });
@@ -137,7 +138,7 @@ program
   .option('--min-segment <seconds>', 'Minimum clip duration before merging (default: 3)', '3')
   .option('-o, --output <outputFile>', 'Output file')
   .action((inputFile, opts) => {
-    silenceRemoveCommand(inputFile, {
+    return silenceRemoveCommand(inputFile, {
       ...opts,
       output: getOutputFile(inputFile, opts),
     });
@@ -154,7 +155,7 @@ program
   .option('--scene-threshold <0-1>', 'Scene detection threshold (default: 0.3)', '0.3')
   .option('--output-dir <dir>', 'Output directory for thumbnails')
   .action((inputFile, opts) => {
-    thumbnailFramesCommand(inputFile, opts);
+    return thumbnailFramesCommand(inputFile, opts);
   });
 
 // ---------------------
@@ -168,7 +169,7 @@ program
   .option('--font <path>', 'Custom TTF font file path')
   .option('-o, --output <file>', 'Output PNG file path')
   .action((imageFile, opts) => {
-    thumbnailCommand(imageFile, opts);
+    return thumbnailCommand(imageFile, opts);
   });
 
 // ---------------------
@@ -179,25 +180,28 @@ program
   .description('Join two or more video files into one.')
   .option('-o, --output <outputFile>', 'Output file')
   .action((files, opts) => {
-    joinCommand(files, {
+    return joinCommand(files, {
       ...opts,
       output: opts.output || getOutputFile(files[0], opts),
     });
   });
 
 // ---------------------
-// OBS Rename (macOS only)
+// OBS Renamer (macOS only)
 // ---------------------
 program
-  .command('obs-rename')
+  .command('obs-renamer')
   .description('Listen for OBS recordings and rename them via macOS popup dialog. Requires OBS WebSocket, Python 3, and macOS.')
-  .action(() => {
-    obsRenameCommand();
+  .option('--install', 'Install as a macOS Launch Agent (auto-start on login)')
+  .option('--uninstall', 'Uninstall the macOS Launch Agent')
+  .option('--status', 'Check if the Launch Agent is loaded')
+  .action((opts) => {
+    return obsRenameCommand(opts);
   });
 
 // Play notification tone after each command completes
-program.hook('postAction', () => {
-  playNotification();
+program.hook('postAction', async () => {
+  await playNotification();
 });
 
 // Parse arguments

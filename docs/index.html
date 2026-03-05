@@ -307,6 +307,7 @@
       <a href="#features">Features</a>
       <a href="#usage">Usage</a>
       <a href="#ai-pipeline">AI Pipeline</a>
+      <a href="#obs">OBS</a>
       <a href="#install">Install</a>
       <a href="https://github.com/daymannovaes/the-one-clip">GitHub</a>
     </div>
@@ -440,7 +441,7 @@
 <span class="prompt">$</span> <span class="cmd">oneclip join</span> <span class="arg">part1.mkv part2.mkv part3.mkv</span>
 
 <span class="comment"># Watch OBS and rename recordings via macOS popup (macOS only)</span>
-<span class="prompt">$</span> <span class="cmd">oneclip obs-rename</span></pre>
+<span class="prompt">$</span> <span class="cmd">oneclip obs-renamer</span></pre>
     </div>
 
     <p style="color: var(--text-muted); font-size: 0.9rem;">All commands accept <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">-o &lt;file&gt;</code> to specify an output path. If omitted, outputs are named <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">&lt;input&gt;_&lt;timestamp&gt;.&lt;ext&gt;</code>.</p>
@@ -464,6 +465,50 @@
       </div>
     </div>
     <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 24px;">These are <a href="https://docs.anthropic.com/en/docs/claude-code" style="color: var(--accent);">Claude Code</a> slash commands. Install OneClip, open Claude Code in your project, and run them.</p>
+  </div>
+</section>
+
+<section id="obs" style="background: var(--bg-card);">
+  <div class="container">
+    <h2>OBS Integration</h2>
+    <p class="subtitle">Auto-rename OBS recordings when they finish — a native macOS dialog pops up so you can title the file without switching to the terminal.</p>
+
+    <div class="terminal" style="margin-bottom: 32px;">
+      <div class="terminal-bar">
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-title">Manual</span>
+      </div>
+      <pre><span class="comment"># Connect to OBS WebSocket and listen for recordings</span>
+<span class="prompt">$</span> <span class="cmd">oneclip obs-renamer</span>
+Connected to OBS (localhost:4455)
+Watching for recordings... (Ctrl+C to quit)
+
+Recording started...
+Recording stopped: ~/Movies/2026-03-05_12-30-00.mkv
+  Renamed: 2026-03-05_12-30-00.mkv → 2026-03-05_my-tutorial.mkv</pre>
+    </div>
+
+    <div class="terminal" style="margin-bottom: 32px;">
+      <div class="terminal-bar">
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-title">Auto-start (macOS Launch Agent)</span>
+      </div>
+      <pre><span class="comment"># Install — runs on login, retries every 30s if OBS is closed</span>
+<span class="prompt">$</span> <span class="cmd">oneclip obs-renamer</span> <span class="flag">--install</span>
+
+<span class="comment"># Check if running</span>
+<span class="prompt">$</span> <span class="cmd">oneclip obs-renamer</span> <span class="flag">--status</span>
+
+<span class="comment"># Remove</span>
+<span class="prompt">$</span> <span class="cmd">oneclip obs-renamer</span> <span class="flag">--uninstall</span></pre>
+    </div>
+
+    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px;"><code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">--install</code>, <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">--uninstall</code>, and <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">--status</code> are macOS-only (launchd).</p>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">Requires macOS, Python 3, OBS Studio with WebSocket server enabled, and <code style="font-family: monospace; background: var(--bg-code); padding: 2px 6px; border-radius: 4px; color: var(--green);">pip install -r obs/requirements.txt</code>.</p>
   </div>
 </section>
 

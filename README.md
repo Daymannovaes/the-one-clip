@@ -122,21 +122,46 @@ All commands accept `-o <file>` to specify an output path. If omitted, outputs a
 
 ## OBS Integration (macOS)
 
-Auto-rename OBS recordings when they finish — a native macOS dialog pops up so you can title the file without switching to the terminal:
+Auto-rename OBS recordings when they finish — a native macOS dialog pops up so you can title the file without switching to the terminal.
+
+### Quick start
 
 ```bash
-oneclip obs-rename
+# Run manually (connects to OBS WebSocket and listens)
+oneclip obs-renamer
 ```
 
-Requires macOS, Python 3, OBS WebSocket server enabled, and `pip install -r obs/requirements.txt`.
+### Auto-start on login (macOS)
 
-The `obs/` directory also contains helper scripts for controlling OBS Studio via WebSocket:
+Install as a macOS Launch Agent so it runs in the background automatically. It retries connecting to OBS every 30 seconds, so it works whether OBS is open or not.
+
+```bash
+# One-time setup
+oneclip obs-renamer --install
+
+# Check if running
+oneclip obs-renamer --status
+
+# Remove
+oneclip obs-renamer --uninstall
+```
+
+Logs: `/tmp/obs-rename.log` (cleared on reboot).
+
+### Requirements
+
+- macOS
+- Python 3
+- OBS Studio with WebSocket server enabled
+- `pip install -r obs/requirements.txt`
+
+### Helper scripts
+
+The `obs/` directory also contains scripts for controlling OBS Studio via WebSocket:
 
 - `connect.py` — Connect and list available scenes
 - `operations.py` — Programmatic recording control
 - `example.py` / `c2.py` — Usage examples
-
-Requires `pip install -r obs/requirements.txt` and OBS WebSocket server enabled.
 
 ## Architecture
 

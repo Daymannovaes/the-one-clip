@@ -17,6 +17,7 @@ All commands are invoked via `media <command>`:
 | `media compress-batch <files...>` | Batch compress multiple files |
 | `media silence-remove <file>` | Remove silent segments. Options: `--threshold`, `--duration`, `-o` |
 | `media thumbnail <file>` | Extract thumbnails. Options: `--count`, `--interval`, `--scene-threshold`, `--output-dir` |
+| `media obs-renamer` | Listen for OBS recordings and rename via macOS popup. Options: `--install`, `--uninstall`, `--status` |
 
 ## Environment Requirements
 
