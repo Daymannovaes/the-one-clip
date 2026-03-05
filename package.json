@@ -4,7 +4,7 @@
   "description": "The One Clip to Rule Them All — a media processing CLI wrapping ffmpeg into ergonomic commands",
   "type": "module",
   "bin": {
-    "oneclip": "./bin/media"
+    "oneclip": "./bin/oneclip"
   },
   "files": [
     "bin/",
@@ -40,7 +40,7 @@
     "zx": "^7.2.0"
   },
   "scripts": {
-    "start": "node bin/media",
-    "configure": "chmod +x bin/media"
+    "start": "node bin/oneclip",
+    "configure": "chmod +x bin/oneclip"
   }
 }

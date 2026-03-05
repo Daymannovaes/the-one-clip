@@ -21,8 +21,7 @@ COPY . .
 ENV PATH="/app/bin:${PATH}"
 
 # Default command
-# TODO: add media-auto as well
-ENTRYPOINT ["media"]
+ENTRYPOINT ["oneclip"]
 CMD ["--help"]
 
-# docker run --rm -v ~/Movies-lowq/:/app/tmp --entrypoint="" media-tools media-auto analyze /app/tmp
+# docker run --rm -v ~/Movies-lowq/:/app/tmp media-tools batch analyze /app/tmp

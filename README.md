@@ -166,7 +166,7 @@ The `obs/` directory also contains scripts for controlling OBS Studio via WebSoc
 ## Architecture
 
 ```
-bin/media            # CLI entry point (Commander)
+bin/oneclip          # CLI entry point (Commander)
 commands/            # One file per command
   cut.js
   compress.js
