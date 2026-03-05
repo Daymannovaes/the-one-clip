@@ -90,7 +90,13 @@ oneclip compress video.mkv
 oneclip compress video.mkv --verygood --speed slow
 
 # Batch compress multiple files
-oneclip compress-batch *.mkv
+oneclip compress *.mkv
+
+# Analyze folder for compression status
+oneclip batch analyze ./recordings
+
+# Auto-compress uncompressed files in a folder
+oneclip batch compress ./recordings
 
 # Generate subtitles (requires whisper.cpp)
 oneclip transcript video.mkv
@@ -171,6 +177,7 @@ commands/            # One file per command
   cut.js
   compress.js
   compress-batch.js
+  analyze.js
   extract-audio.js
   track.js
   remove-track.js

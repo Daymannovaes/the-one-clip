@@ -10,7 +10,7 @@ const MB = 1024 * 1024; // 1 MB in bytes
 async function getDuration(filePath) {
     try {
         // Using ffprobe to get duration
-        const result = await $`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${filePath}"`;
+        const result = await $`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${filePath}"`.quiet();
         return parseFloat(result.toString());
     } catch (error) {
         console.error(`Error getting duration for ${filePath}:`, error.message);

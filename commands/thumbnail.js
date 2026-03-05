@@ -49,7 +49,7 @@ async function loadImageAsBase64(imagePath) {
 
 const HIGHLIGHT_COLOR = '#f0b429';
 
-function parseTitle(title) {
+export function parseTitle(title) {
   const segments = title.split(/(\*[^*]+\*)/);
   const words = [];
   for (const seg of segments) {
@@ -272,7 +272,7 @@ async function renderThumbnail(element, fontData, outputPath) {
   console.log(`  Created: ${outputPath}`);
 }
 
-function getOutputPath(inputFile, opts, templateName) {
+export function getOutputPath(inputFile, opts, templateName) {
   if (opts.output && templateName === undefined) {
     return opts.output;
   }

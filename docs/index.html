@@ -368,7 +368,7 @@
       <div class="feature-card">
         <span class="icon">zip</span>
         <h3>Compress</h3>
-        <p>H.264 compression with configurable quality and speed presets. Supports batch processing for multiple files.</p>
+        <p>H.264 compression with configurable quality and speed presets. Supports batch processing for multiple files. <code>oneclip batch analyze</code> shows size, duration, and compression status for a whole folder.</p>
       </div>
       <div class="feature-card">
         <span class="icon">srt</span>
@@ -423,7 +423,13 @@
 <span class="prompt">$</span> <span class="cmd">oneclip compress</span> <span class="arg">video.mkv</span> <span class="flag">--verygood --speed slow</span>
 
 <span class="comment"># Batch compress all MKV files</span>
-<span class="prompt">$</span> <span class="cmd">oneclip compress-batch</span> <span class="arg">*.mkv</span>
+<span class="prompt">$</span> <span class="cmd">oneclip compress</span> <span class="arg">*.mkv</span>
+
+<span class="comment"># Analyze folder for compression status</span>
+<span class="prompt">$</span> <span class="cmd">oneclip batch analyze</span> <span class="arg">./recordings</span>
+
+<span class="comment"># Auto-compress uncompressed files in a folder</span>
+<span class="prompt">$</span> <span class="cmd">oneclip batch compress</span> <span class="arg">./recordings</span>
 
 <span class="comment"># Generate subtitles</span>
 <span class="prompt">$</span> <span class="cmd">oneclip transcript</span> <span class="arg">video.mkv</span>

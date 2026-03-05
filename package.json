@@ -41,6 +41,13 @@
   },
   "scripts": {
     "start": "node bin/oneclip",
-    "configure": "chmod +x bin/oneclip"
+    "configure": "chmod +x bin/oneclip",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.18"
   }
 }
