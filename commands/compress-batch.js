@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { compressCommand } from './compress.js';
 
 function getOutputFile(inputFile, opts = {}, ext = null) {
@@ -10,8 +11,14 @@ function getOutputFile(inputFile, opts = {}, ext = null) {
 }
 
 
-export async function compressBatchCommand(files) {
-  console.log(`Compressing ${files.length} files...`);
+export async function compressBatchCommand(files, opts = {}) {
+  const defaults = {
+    threads: Math.max(1, Math.floor(os.cpus().length / 2)),
+    nice: true,
+  };
+  const mergedOpts = { ...defaults, ...opts };
+
+  console.log(`Compressing ${files.length} files (threads: ${mergedOpts.threads}, nice: ${mergedOpts.nice})...`);
 
   for (const file of files) {
     try {
@@ -31,6 +38,7 @@ export async function compressBatchCommand(files) {
       await compressCommand(file, {
         output: getOutputFile(file),
         speed: 'slow',
+        ...mergedOpts,
       });
 
       // If compression was successful, rename the original file

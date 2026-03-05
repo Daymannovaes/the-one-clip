@@ -41,12 +41,22 @@ export async function compressCommand(inputFile, opts) {
 
     const startTime = Date.now();
 
-    await $`ffmpeg -y -i ${inputFile} \
-      -vcodec ${codec} -preset ${speed} -crf ${crf} \
-      ${tagArgs} \
-      -acodec aac -b:a 128k -ar 44100 \
-      -movflags +faststart \
-      ${output}`;
+    const threadArgs = opts.threads ? ['-threads', String(opts.threads)] : [];
+    const cmd = [
+      'ffmpeg', '-y', '-i', inputFile,
+      ...threadArgs,
+      '-vcodec', codec, '-preset', speed, '-crf', String(crf),
+      ...tagArgs,
+      '-acodec', 'aac', '-b:a', '128k', '-ar', '44100',
+      '-movflags', '+faststart',
+      output,
+    ];
+
+    if (opts.nice) {
+      await $`nice -n 19 ${cmd}`;
+    } else {
+      await $`${cmd}`;
+    }
 
     const elapsed = Date.now() - startTime;
     const inputSize = statSync(inputFile).size;

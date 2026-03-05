@@ -22,3 +22,5 @@ obs/path/
 input/
 output/
 
+.claude/data
+

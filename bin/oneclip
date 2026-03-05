@@ -103,6 +103,8 @@ program
   .option('--verygood', 'Use very good quality result. If false, the quality is good but not VERY good')
   .option('--speed <speed>', 'Specify the speed of compression. Default is fast. "Slow" yields 2x smaller result. Options: fast, slow')
   .option('--codec <codec>', 'Video codec. Options: h264, h265 (default: h265)')
+  .option('--threads <n>', 'Limit CPU threads for ffmpeg (default: all cores)', parseInt)
+  .option('--nice', 'Run at low OS priority (macOS/Linux)')
   .action((files, opts) => {
     if (files.length === 1) {
       return compressCommand(files[0], {
@@ -110,7 +112,7 @@ program
         output: getOutputFile(files[0], opts),
       });
     }
-    return compressBatchCommand(files);
+    return compressBatchCommand(files, opts);
   });
 
 // ---------------------
@@ -221,7 +223,9 @@ batch
 batch
   .command('compress <folder>')
   .description('Analyze videos in a folder and auto-compress uncompressed files')
-  .action((folder) => {
+  .option('--threads <n>', 'Limit CPU threads for ffmpeg (default: half cores)', parseInt)
+  .option('--no-nice', 'Disable low OS priority (enabled by default)')
+  .action((folder, opts) => {
     return analyzeCommand(folder).then(results => {
       let notCompressedFiles = results
         .filter(result => !result.isCompressed);
@@ -240,7 +244,8 @@ batch
       }
 
       return compressBatchCommand(
-        notCompressedFiles.map(result => `${folder}/${result.file}`)
+        notCompressedFiles.map(result => `${folder}/${result.file}`),
+        opts
       );
     });
   });
