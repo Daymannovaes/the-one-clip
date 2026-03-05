@@ -24,7 +24,7 @@ export async function joinCommand(files, opts) {
     writeFileSync(listFile, listContent);
 
     console.log(`Joining ${files.length} files into "${output}"...`);
-    await $`ffmpeg -y -f concat -safe 0 -i ${listFile} -codec copy ${output}`;
+    await $`ffmpeg -y -f concat -safe 0 -i ${listFile} -map 0 -codec copy ${output}`;
     console.log(`Successfully created "${output}".`);
   } catch (error) {
     console.error('Failed to join videos:', error);
