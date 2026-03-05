@@ -11,6 +11,8 @@ function getOutputFile(inputFile, opts = {}, ext = null) {
 
 
 export async function compressBatchCommand(files) {
+  console.log(`Compressing ${files.length} files...`);
+
   for (const file of files) {
     try {
       // Check if file exists

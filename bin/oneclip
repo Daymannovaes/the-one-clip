@@ -87,31 +87,24 @@ program
   });
 
 // ---------------------
-// Compress
+// Compress (single file or batch)
 // ---------------------
 program
-  .command('compress <inputFile>')
-  .description('Compress video to a small but reasonable size')
-  .option('-o, --output <outputFile>', 'Output file')
+  .command('compress <files...>')
+  .description('Compress video(s) to a small but reasonable size. Pass multiple files for batch mode.')
+  .option('-o, --output <outputFile>', 'Output file (single file only)')
   .option('--verygood', 'Use very good quality result. If false, the quality is good but not VERY good')
   .option('--speed <speed>', 'Specify the speed of compression. Default is fast. "Slow" yields 2x smaller result. Options: fast, slow')
   .option('--codec <codec>', 'Video codec. Options: h264, h265 (default: h265)')
-  .action((inputFile, opts) => {
-    return compressCommand(inputFile, {
-      ...opts,
-      output: getOutputFile(inputFile, opts),
-    });
+  .action((files, opts) => {
+    if (files.length === 1) {
+      return compressCommand(files[0], {
+        ...opts,
+        output: getOutputFile(files[0], opts),
+      });
+    }
+    return compressBatchCommand(files);
   });
-
-// ---------------------
-// Compress Batch
-// ---------------------
-program
-    .command('compress-batch <files...>')
-    .description('Compress multiple files and rename originals')
-    .action((files) => {
-        return compressBatchCommand(files);
-    });
 
 // ---------------------
 // Remove Track

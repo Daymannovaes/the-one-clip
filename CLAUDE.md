@@ -13,8 +13,7 @@ All commands are invoked via `oneclip <command>`:
 | `oneclip remove-track <file>` | Remove audio track. Options: `--track <n>`, `-o` |
 | `oneclip extract-audio <file>` | Extract audio to WAV. Options: `-o` |
 | `oneclip transcript <file>` | Generate SRT via whisper.cpp. Options: `-o`, `-w`, `-m` |
-| `oneclip compress <file>` | Compress video (H.264). Options: `--verygood`, `--speed`, `-o` |
-| `oneclip compress-batch <files...>` | Batch compress multiple files |
+| `oneclip compress <files...>` | Compress video(s). Pass multiple files for batch mode. Options: `--verygood`, `--speed`, `-o` |
 | `oneclip batch analyze <folder>` | Analyze folder for compression status |
 | `oneclip batch compress <folder>` | Analyze + auto-compress uncompressed files |
 | `oneclip silence-remove <file>` | Remove silent segments. Options: `--threshold`, `--duration`, `-o` |

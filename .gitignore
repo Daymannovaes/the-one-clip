@@ -6,13 +6,6 @@ node_modules/
 
 # Binaries & media
 cli/
-*.mkv
-*.mp4
-*.avi
-*.mov
-*.wav
-*.mp3
-!tones/*.wav
 
 # Legacy / build artifacts
 dist/
