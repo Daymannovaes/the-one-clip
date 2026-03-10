@@ -16,6 +16,7 @@ import { thumbnailFramesCommand } from '../commands/thumbnail-frames.js';
 import { thumbnailCommand } from '../commands/thumbnail.js';
 import { obsRenameCommand } from '../commands/obs-renamer.js';
 import { joinCommand } from '../commands/join.js';
+import { fillerRemoveCommand } from '../commands/filler-remove.js';
 import { playNotification } from '../lib/notify.js';
 import { checkForUpdate } from '../lib/check-version.js';
 import { upgradeCommand } from '../commands/upgrade.js';
@@ -173,6 +174,26 @@ program
   .option('-o, --output <file>', 'Output PNG file path')
   .action((imageFile, opts) => {
     return thumbnailCommand(imageFile, opts);
+  });
+
+// ---------------------
+// Filler Remove
+// ---------------------
+program
+  .command('filler-remove <inputFile>')
+  .description('Detect and remove verbal filler words from a video (e.g. "ahn", "né", "tipo").')
+  .option('-o, --output <outputFile>', 'Output file')
+  .option('-l, --language <lang>', 'Language code for transcription (default: pt)', 'pt')
+  .option('--auto', 'Skip confirmation, remove all HIGH+MEDIUM confidence fillers')
+  .option('--dry-run', 'Only show detected fillers, do not cut')
+  .option('--padding <ms>', 'Padding around cuts in ms (default: 100)', '100')
+  .option('-w, --whisperPath <whisperPath>', 'Whisper path')
+  .option('-m, --ggmlModelPath <ggmlModelPath>', 'Ggml model path')
+  .action((inputFile, opts) => {
+    return fillerRemoveCommand(inputFile, {
+      ...opts,
+      output: opts.output || getOutputFile(inputFile, opts),
+    });
   });
 
 // ---------------------
